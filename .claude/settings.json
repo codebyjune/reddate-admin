@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add bcryptjs jsonwebtoken)",
+      "Bash(pnpm add -D @types/bcryptjs @types/jsonwebtoken)",
+      "Bash(pnpm add echarts vue-echarts)"
+    ]
+  }
+}

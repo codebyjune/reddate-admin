@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// 用户表
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String?
+  phone     String?
+  role      String   @default("user") // admin, user
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// 合同表
+model Contract {
+  id                Int      @id @default(autoincrement())
+  contractNo        String   @unique
+  signDate          String
+  partyBName        String
+  partyBIdCard      String
+  partyBPhone       String
+  partyBBankCard    String?   // 银行卡号
+  plantingArea      Float
+  purchaseQuantity  Float
+  unitPrice         Float
+  deposit           Float    @default(0)
+  boxQuantity       Int      @default(0)
+  purchaseManager   String?
+  contractImage     String?   // 合同图片URL
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("contracts")
+}
+
+// 入库随车单
+model InboundDelivery {
+  id            Int      @id @default(autoincrement())
+  deliveryDate  String
+  deliveryNo    String
+  licensePlate  String
+  driver        String
+  driverPhone   String?
+  origin        String
+  sender        String?
+  senderPhone   String?
+  destination   String
+  receiver      String?
+  purchaseManager String?
+  confirmSender String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  products      InboundProduct[]
+
+  @@map("inbound_deliveries")
+}
+
+// 入库产品明细
+model InboundProduct {
+  id            Int     @id @default(autoincrement())
+  deliveryId    Int
+  contractName  String
+  productLevel  String  @default("统货")  // 产品等级：特级、一级、二级、三级、统货
+  quantity      Int
+  netWeight     Float
+  yieldRate     Float?
+  lossRate      Float?
+  moistureRate  Float?
+  unitPrice     Float
+  remark        String?
+
+  delivery      InboundDelivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+
+  @@map("inbound_products")
+}
+
+// 生产记录（红枣加工）- 成品入库
+model ProductionRecord {
+  id        Int      @id @default(autoincrement())
+  date      String                     // 生产日期
+  batchNo   String                     // 批次号
+  shift     String   @default("day")   // 班次：day(白班)、night(夜班)
+  grade     String                     // 产品等级：KingGrade, SuperPremium, PremiumGrade, Grade1, Grade2, Grade3
+  spec      Float                      // 规格(kg/件)
+  quantity  Int                        // 数量(件)
+  weight    Float                      // 重量(kg)
+  remark    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("production_records")
+}
+
+// 等外品记录（残次品）
+model RejectProduct {
+  id          Int      @id @default(autoincrement())
+  date        String                     // 生产日期
+  batchNo     String                     // 批次号
+  shift       String   @default("day")   // 班次：day(白班)、night(夜班)
+  rejectType  String                     // 等外品类型：变形、裂口、干条、烂枣
+  sourceGrade String                     // 来源等级
+  spec        Float                      // 规格(kg/件) - 固定值
+  quantity    Int                        // 数量(件)
+  weight      Float                      // 重量(kg)
+  remark      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("reject_products")
+}
+
+// 销售记录（现货销售 + 期货交割）
+model SalesRecord {
+  id              Int      @id @default(autoincrement())
+  salesType       String   @default("现货")     // 销售类型：现货、期货交割
+  salesDate       String                       // 销售日期/交割日期
+  salesNo         String                       // 销售单号/交割单号
+  customerName    String?                      // 客户名称（现货）
+  customerPhone   String?                      // 客户电话（现货）
+  customerAddress String?                      // 客户地址（现货）
+
+  // 产品信息
+  productCategory String   @default("normal")  // 产品类型：normal(等级内)、reject(等外品)
+  productLevel    String   @default("Grade1")  // 产品等级/等外品类型
+  spec            String?                      // 规格(kg/件)
+  quantity        Int                          // 销售数量（件）
+  netWeight       Float                        // 净重(kg)
+
+  // 价格信息
+  unitPrice       Float                        // 单价(元/kg)
+  totalAmount     Float                        // 总金额(元)
+
+  // 付款信息（现货专用）
+  paymentMethod   String?                      // 付款方式
+  paymentStatus   String   @default("未付款")  // 付款状态
+  paidAmount      Float    @default(0)         // 已付金额
+
+  // 期货交割专用字段
+  contractMonth   String?                      // 期货合约月份（如：202401）
+  warehouse       String?                      // 交割仓库名称
+  warehouseCode   String?                      // 交割仓库代码
+  warrantNo       String?                      // 仓单编号
+  deliveryStatus  String   @default("待交割")  // 交割状态：待交割、已交割、已注销
+  settleAmount    Float    @default(0)         // 交割结算金额
+
+  // 经办人信息
+  salesPerson     String?                      // 销售员/交割经办人
+  remark          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("sales_records")
+}

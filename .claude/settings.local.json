@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(pnpm approve-builds)",
+      "Bash(echo \"@prisma/client:*)",
+      "Bash(pnpm exec prisma generate)",
+      "Bash(pnpm exec prisma db push)",
+      "Bash(pnpm exec prisma validate)",
+      "WebSearch",
+      "Bash(npx vue-tsc --noEmit)",
+      "Bash(npm run build)"
+    ]
+  }
+}
