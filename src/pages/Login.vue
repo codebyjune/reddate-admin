@@ -3,7 +3,7 @@
     <el-card class="w-96">
       <template #header>
         <div class="text-center">
-          <h1 class="text-xl font-semibold text-gray-800">红枣收购管理系统</h1>
+          <h1 class="text-xl font-semibold text-gray-800">红枣管理系统</h1>
           <p class="text-sm text-gray-500 mt-1">用户登录</p>
         </div>
       </template>
