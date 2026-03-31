@@ -5,7 +5,7 @@
       <template #header>
         <div class="flex flex-col gap-1">
           <h2 class="text-lg font-semibold text-gray-800">生产录入</h2>
-          <p class="text-sm text-gray-400">登记当班红枣生产批次信息</p>
+          <p class="text-sm text-gray-400">登记当日红枣生产批次信息</p>
         </div>
       </template>
 
@@ -33,19 +33,26 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="批次号">
-              <el-input v-model="commonData.batchNo" placeholder="请输入批次号" />
+              <el-input
+                v-model="commonData.batchNo"
+                placeholder="请输入批次号"
+              />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
 
-      <!-- 等级内产品录入 -->
-      <div class="mb-2 text-gray-600 font-medium">等级内产品</div>
+      <!-- 成品录入 -->
+      <div class="mb-2 text-gray-600 font-medium">成品录入</div>
       <el-form :model="normalForm" label-width="80px" ref="normalFormRef">
         <el-row :gutter="20">
           <el-col :span="6">
             <el-form-item label="等级">
-              <el-select placeholder="请选择等级" v-model="normalForm.grade" style="width: 100%">
+              <el-select
+                placeholder="请选择等级"
+                v-model="normalForm.grade"
+                style="width: 100%"
+              >
                 <el-option label="枣王" value="KingGrade" />
                 <el-option label="超特" value="SuperPremium" />
                 <el-option label="特级" value="PremiumGrade" />
@@ -64,14 +71,21 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="数量">
-              <el-input v-model="normalForm.quantity" placeholder="请输入数量">
+              <el-input
+                v-model.number="normalForm.quantity"
+                placeholder="请输入数量"
+              >
                 <template #append>件</template>
               </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="重量">
-              <el-input :value="normalWeight || ''" placeholder="自动计算" disabled>
+              <el-input
+                :value="normalWeight || ''"
+                placeholder="自动计算"
+                disabled
+              >
                 <template #append>kg</template>
               </el-input>
             </el-form-item>
@@ -83,20 +97,34 @@
               <el-input v-model="normalForm.remark" placeholder="请输入备注" />
             </el-form-item>
           </el-col>
-          <el-col :span="6" class="!items-center !justify-end flex">
-            <el-button type="primary" @click="addNormalItem">添加等级内产品</el-button>
+          <el-col :span="6">
+            <el-button type="primary" @click="addNormalItem"
+              >添加成品</el-button
+            >
           </el-col>
         </el-row>
       </el-form>
 
       <!-- 等外品录入（可折叠） -->
-      <el-collapse v-model="rejectCollapse" class="mt-4">
-        <el-collapse-item title="等外品录入（变形、裂口、干条、烂枣）" name="reject">
-          <el-form :model="rejectForm" label-width="80px" ref="rejectFormRef">
+      <el-collapse v-model="substandardCollapse" class="mt-4">
+        <el-collapse-item
+          title="等外品录入（变形、裂口、干条、烂枣）"
+          name="substandard"
+        >
+          <el-form
+            :model="substandardForm"
+            label-width="80px"
+            ref="substandardFormRef"
+          >
             <el-row :gutter="20">
               <el-col :span="6">
                 <el-form-item label="类型">
-                  <el-select v-model="rejectForm.rejectType" placeholder="请选择类型" @change="handleRejectTypeChange" style="width: 100%">
+                  <el-select
+                    v-model="substandardForm.substandardType"
+                    placeholder="请选择类型"
+                    @change="handleSubstandardTypeChange"
+                    style="width: 100%"
+                  >
                     <el-option label="变形" value="变形" />
                     <el-option label="裂口" value="裂口" />
                     <el-option label="干条" value="干条" />
@@ -106,7 +134,11 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item label="来源等级">
-                  <el-select v-model="rejectForm.sourceGrade" placeholder="请选择来源等级" style="width: 100%">
+                  <el-select
+                    v-model="substandardForm.sourceGrade"
+                    placeholder="请选择来源等级"
+                    style="width: 100%"
+                  >
                     <el-option label="枣王" value="枣王" />
                     <el-option label="超特" value="超特" />
                     <el-option label="特级" value="特级" />
@@ -118,14 +150,17 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item label="规格">
-                  <el-input :value="rejectForm.spec" disabled>
+                  <el-input :value="substandardForm.spec" disabled>
                     <template #append>kg</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="6">
                 <el-form-item label="数量">
-                  <el-input v-model="rejectForm.quantity" placeholder="请输入数量">
+                  <el-input
+                    v-model.number="substandardForm.quantity"
+                    placeholder="请输入数量"
+                  >
                     <template #append>件</template>
                   </el-input>
                 </el-form-item>
@@ -134,18 +169,27 @@
             <el-row :gutter="20">
               <el-col :span="6">
                 <el-form-item label="重量">
-                  <el-input :value="rejectWeight || ''" placeholder="自动计算" disabled>
+                  <el-input
+                    :value="substandardWeight || ''"
+                    placeholder="自动计算"
+                    disabled
+                  >
                     <template #append>kg</template>
                   </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="备注">
-                  <el-input v-model="rejectForm.remark" placeholder="请输入备注" />
+                  <el-input
+                    v-model="substandardForm.remark"
+                    placeholder="请输入备注"
+                  />
                 </el-form-item>
               </el-col>
-              <el-col :span="6" class="!items-center !justify-end flex">
-                <el-button type="warning" @click="addRejectItem">添加等外品</el-button>
+              <el-col :span="6">
+                <el-button type="warning" @click="addSubstandardItem"
+                  >添加等外品</el-button
+                >
               </el-col>
             </el-row>
           </el-form>
@@ -153,42 +197,65 @@
       </el-collapse>
 
       <!-- 待提交列表 -->
-      <div v-if="pendingNormalList.length > 0 || pendingRejectList.length > 0" class="mt-4">
+      <div
+        v-if="pendingNormalList.length > 0 || pendingSubstandardList.length > 0"
+        class="mt-4"
+      >
         <div class="text-sm font-medium text-gray-600 mb-2">待提交列表</div>
-        <el-table :data="pendingNormalList" size="small" border class="mb-2">
+        <el-table :data="pendingNormalList" size="small" class="mb-2">
           <el-table-column label="类型" width="80">
-            <template #default><el-tag type="success">等级内</el-tag></template>
+            <template #default><el-tag type="success">成品</el-tag></template>
           </el-table-column>
           <el-table-column prop="grade" label="等级" width="80">
-            <template #default="{ row }">{{ gradeMap[row.grade] || row.grade }}</template>
+            <template #default="{ row }">{{
+              gradeMap[row.grade] || row.grade
+            }}</template>
           </el-table-column>
           <el-table-column prop="spec" label="规格(kg)" width="80" />
           <el-table-column prop="quantity" label="数量(件)" width="80" />
           <el-table-column prop="weight" label="重量(kg)" width="100">
-            <template #default="{ row }">{{ row.weight?.toFixed(2) }}</template>
+            <template #default="{ row }">{{ formatWeight(row.weight) }}</template>
           </el-table-column>
           <el-table-column prop="remark" label="备注" />
           <el-table-column label="操作" width="60" align="center">
             <template #default="{ $index }">
-              <el-button type="danger" size="small" link @click="removeNormalItem($index)">删除</el-button>
+              <el-button
+                type="danger"
+                size="small"
+                link
+                @click="removeNormalItem($index)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
-        <el-table v-if="pendingRejectList.length > 0" :data="pendingRejectList" size="small" border>
+        <el-table
+          v-if="pendingSubstandardList.length > 0"
+          :data="pendingSubstandardList"
+          size="small"
+        >
           <el-table-column label="类型" width="80">
             <template #default><el-tag type="warning">等外品</el-tag></template>
           </el-table-column>
-          <el-table-column prop="rejectType" label="名称" width="80" />
+          <el-table-column prop="substandardType" label="名称" width="80" />
           <el-table-column prop="sourceGrade" label="来源等级" width="80" />
           <el-table-column prop="spec" label="规格(kg)" width="80" />
           <el-table-column prop="quantity" label="数量(件)" width="80" />
           <el-table-column prop="weight" label="重量(kg)" width="100">
-            <template #default="{ row }">{{ row.weight?.toFixed(2) }}</template>
+            <template #default="{ row }">{{
+              formatWeight(row.weight)
+            }}</template>
           </el-table-column>
           <el-table-column prop="remark" label="备注" />
           <el-table-column label="操作" width="60" align="center">
             <template #default="{ $index }">
-              <el-button type="danger" size="small" link @click="removeRejectItem($index)">删除</el-button>
+              <el-button
+                type="danger"
+                size="small"
+                link
+                @click="removeSubstandardItem($index)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -197,8 +264,18 @@
       <!-- 提交按钮 -->
       <div class="flex justify-end mt-4 gap-2">
         <el-button @click="handleClearAll">清空</el-button>
-        <el-button type="primary" @click="handleBatchSubmit" :loading="submitLoading" :disabled="pendingNormalList.length === 0 && pendingRejectList.length === 0">
-          批量提交 ({{ pendingNormalList.length + pendingRejectList.length }})
+        <el-button
+          type="primary"
+          @click="handleBatchSubmit"
+          :loading="submitLoading"
+          :disabled="
+            pendingNormalList.length === 0 &&
+            pendingSubstandardList.length === 0
+          "
+        >
+          批量提交 ({{
+            pendingNormalList.length + pendingSubstandardList.length
+          }})
         </el-button>
       </div>
     </el-card>
@@ -214,39 +291,73 @@
         :data="batchList"
         stripe
         v-loading="loading"
-        :row-key="(row: BatchRecord) => `${row.date}-${row.batchNo}-${row.shift}`"
+        :row-key="
+          (row: BatchRecord) => `${row.date}-${row.batchNo}-${row.shift}`
+        "
         v-model:expand-row-keys="expandedRowKeys"
         @expand-change="handleBatchExpand"
       >
         <el-table-column type="expand">
           <template #default="{ row }">
             <div class="p-4 bg-gray-50">
-              <div class="mb-2 text-sm font-medium text-gray-600">等级内产品</div>
-              <el-table :data="row.normalProducts" size="small" border class="mb-3">
+              <div class="mb-2 text-sm font-medium text-gray-600">
+                成品
+              </div>
+              <el-table
+                :data="row.normalProducts"
+                size="small"
+                border
+                class="mb-3"
+              >
                 <el-table-column prop="grade" label="等级" width="80">
-                  <template #default="{ row: r }">{{ gradeMap[r.grade] || r.grade }}</template>
+                  <template #default="{ row: r }">{{
+                    gradeMap[r.grade] || r.grade
+                  }}</template>
                 </el-table-column>
                 <el-table-column prop="spec" label="规格(kg)" width="80" />
                 <el-table-column prop="quantity" label="数量(件)" width="80" />
                 <el-table-column prop="weight" label="重量(kg)" width="100">
-                  <template #default="{ row: r }">{{ r.weight?.toFixed(2) }}</template>
+                  <template #default="{ row: r }">{{
+                    r.weight?.toFixed(2)
+                  }}</template>
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" />
               </el-table>
-              <div v-if="row.rejectProducts && row.rejectProducts.length > 0">
+              <div
+                v-if="
+                  row.substandardProducts && row.substandardProducts.length > 0
+                "
+              >
                 <div class="mb-2 text-sm font-medium text-gray-600">等外品</div>
-                <el-table :data="row.rejectProducts" size="small" border>
-                  <el-table-column prop="rejectType" label="类型" width="80" />
-                  <el-table-column prop="sourceGrade" label="来源等级" width="80" />
+                <el-table :data="row.substandardProducts" size="small" border>
+                  <el-table-column
+                    prop="substandardType"
+                    label="类型"
+                    width="80"
+                  />
+                  <el-table-column
+                    prop="sourceGrade"
+                    label="来源等级"
+                    width="80"
+                  />
                   <el-table-column prop="spec" label="规格(kg)" width="80" />
-                  <el-table-column prop="quantity" label="数量(件)" width="80" />
+                  <el-table-column
+                    prop="quantity"
+                    label="数量(件)"
+                    width="80"
+                  />
                   <el-table-column prop="weight" label="重量(kg)" width="100">
-                    <template #default="{ row: r }">{{ r.weight?.toFixed(2) }}</template>
+                    <template #default="{ row: r }">{{
+                      r.weight?.toFixed(2)
+                    }}</template>
                   </el-table-column>
                   <el-table-column prop="remark" label="备注" />
                 </el-table>
               </div>
-              <div v-else-if="row.normalProducts && row.normalProducts.length > 0" class="text-gray-400 text-sm">
+              <div
+                v-else-if="row.normalProducts && row.normalProducts.length > 0"
+                class="text-gray-400 text-sm"
+              >
                 暂无等外品记录
               </div>
             </div>
@@ -255,7 +366,10 @@
         <el-table-column prop="date" label="日期" width="110" />
         <el-table-column prop="shift" label="班次" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.shift === 'day' ? 'warning' : 'info'" size="small">
+            <el-tag
+              :type="row.shift === 'day' ? 'warning' : 'info'"
+              size="small"
+            >
               {{ shiftMap[row.shift] || row.shift }}
             </el-tag>
           </template>
@@ -263,22 +377,30 @@
         <el-table-column prop="batchNo" label="批次号" min-width="140" />
         <el-table-column label="等级内产品" width="100" align="center">
           <template #default="{ row }">
-            <el-tag type="success" size="small">{{ row.normalCount || 0 }} 条</el-tag>
+            <el-tag type="success" size="small"
+              >{{ row.normalCount || 0 }} 条</el-tag
+            >
           </template>
         </el-table-column>
         <el-table-column label="等外品" width="100" align="center">
           <template #default="{ row }">
-            <el-tag v-if="row.rejectCount > 0" type="warning" size="small">{{ row.rejectCount }} 条</el-tag>
+            <el-tag v-if="row.substandardCount > 0" type="warning" size="small"
+              >{{ row.substandardCount }} 条</el-tag
+            >
             <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
         <el-table-column label="总件数" width="100" align="center">
           <template #default="{ row }">
-            <el-tag type="info" size="small">{{ row.totalQuantity || 0 }} 件</el-tag>
+            <el-tag type="info" size="small"
+              >{{ row.totalQuantity || 0 }} 件</el-tag
+            >
           </template>
         </el-table-column>
         <el-table-column label="总重量(吨)" width="120" align="right">
-          <template #default="{ row }">{{ ((row.totalWeight || 0) / 1000).toFixed(3) }}</template>
+          <template #default="{ row }">{{
+            ((row.totalWeight || 0) / 1000).toFixed(3)
+          }}</template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -290,8 +412,14 @@ import { computed, reactive, ref, onMounted } from "vue";
 import type { FormInstance } from "element-plus";
 import { ElMessage } from "element-plus";
 import request from "@/utils/request";
-
-type GradeType = "KingGrade" | "SuperPremium" | "PremiumGrade" | "Grade1" | "Grade2" | "Grade3";
+import { formatWeight } from "@/utils/format";
+type GradeType =
+  | "KingGrade"
+  | "SuperPremium"
+  | "PremiumGrade"
+  | "Grade1"
+  | "Grade2"
+  | "Grade3";
 
 interface NormalItem {
   grade: GradeType;
@@ -301,8 +429,8 @@ interface NormalItem {
   remark: string;
 }
 
-interface RejectItem {
-  rejectType: string;
+interface SubstandardItem {
+  substandardType: string;
   sourceGrade: string;
   spec: number;
   quantity: number;
@@ -322,12 +450,12 @@ interface ProductionRecord {
   remark: string;
 }
 
-interface RejectRecord {
+interface SubstandardRecord {
   id: number;
   date: string;
   shift: string;
   batchNo: string;
-  rejectType: string;
+  substandardType: string;
   sourceGrade: string;
   spec: number;
   quantity: number;
@@ -340,15 +468,15 @@ interface BatchRecord {
   shift: string;
   batchNo: string;
   normalCount: number;
-  rejectCount: number;
+  substandardCount: number;
   totalQuantity: number;
   totalWeight: number;
   normalProducts: ProductionRecord[];
-  rejectProducts: RejectRecord[];
+  substandardProducts: SubstandardRecord[];
 }
 
 // 等外品类型对应的固定规格(kg/件)
-const REJECT_SPECS: Record<string, number> = {
+const SUBSTANDARD_SPECS: Record<string, number> = {
   变形: 12,
   裂口: 12,
   干条: 10,
@@ -366,40 +494,44 @@ const commonData = reactive({
 const normalForm = reactive({
   grade: "Grade1" as GradeType,
   spec: "",
-  quantity: 0 as number | string,
+  quantity: 0 as number,
   remark: "",
 });
 
 // 等外品表单
-const rejectForm = reactive({
-  rejectType: "变形",
+const substandardForm = reactive({
+  substandardType: "变形",
   sourceGrade: "一级",
   spec: 12,
-  quantity: 0 as number | string,
+  quantity: 0 as number,
   remark: "",
 });
 
 // 待提交列表
 const pendingNormalList = ref<NormalItem[]>([]);
-const pendingRejectList = ref<RejectItem[]>([]);
+const pendingSubstandardList = ref<SubstandardItem[]>([]);
 
 const normalFormRef = ref<FormInstance>();
-const rejectFormRef = ref<FormInstance>();
+const substandardFormRef = ref<FormInstance>();
 void normalFormRef; // 保留用于模板引用
-void rejectFormRef;
+void substandardFormRef;
 const batchList = ref<BatchRecord[]>([]);
 const expandedRowKeys = ref<string[]>([]);
 const loading = ref(false);
 const submitLoading = ref(false);
-const rejectCollapse = ref<string[]>([]);
+const substandardCollapse = ref<string[]>([]);
 
 // 所有记录（用于展开详情）
 const allNormalRecords = ref<ProductionRecord[]>([]);
-const allRejectRecords = ref<RejectRecord[]>([]);
+const allSubstandardRecords = ref<SubstandardRecord[]>([]);
 
 // 计算重量
-const normalWeight = computed(() => Number(normalForm.quantity) * Number(normalForm.spec));
-const rejectWeight = computed(() => rejectForm.spec * Number(rejectForm.quantity));
+const normalWeight = computed(
+  () => Number(normalForm.quantity) * Number(normalForm.spec),
+);
+const substandardWeight = computed(
+  () => substandardForm.spec * Number(substandardForm.quantity),
+);
 
 const shiftMap: Record<string, string> = {
   day: "白班",
@@ -416,13 +548,13 @@ const gradeMap: Record<string, string> = {
 };
 
 // 等外品类型改变时更新规格
-const handleRejectTypeChange = (type: string) => {
-  rejectForm.spec = REJECT_SPECS[type] || 12;
+const handleSubstandardTypeChange = (type: string) => {
+  substandardForm.spec = SUBSTANDARD_SPECS[type] || 12;
 };
 
-// 添加等级内产品到待提交列表
+// 添加正品到待提交列表
 const addNormalItem = () => {
-  if (!normalForm.spec || Number(normalForm.quantity) <= 0) {
+  if (!normalForm.spec || normalForm.quantity <= 0) {
     ElMessage.warning("请填写规格和数量");
     return;
   }
@@ -440,22 +572,22 @@ const addNormalItem = () => {
 };
 
 // 添加等外品到待提交列表
-const addRejectItem = () => {
-  if (Number(rejectForm.quantity) <= 0) {
+const addSubstandardItem = () => {
+  if (substandardForm.quantity <= 0) {
     ElMessage.warning("请填写数量");
     return;
   }
-  pendingRejectList.value.push({
-    rejectType: rejectForm.rejectType,
-    sourceGrade: rejectForm.sourceGrade,
-    spec: rejectForm.spec,
-    quantity: Number(rejectForm.quantity),
-    weight: rejectWeight.value,
-    remark: rejectForm.remark,
+  pendingSubstandardList.value.push({
+    substandardType: substandardForm.substandardType,
+    sourceGrade: substandardForm.sourceGrade,
+    spec: substandardForm.spec,
+    quantity: substandardForm.quantity,
+    weight: substandardWeight.value,
+    remark: substandardForm.remark,
   });
   // 重置表单
-  rejectForm.quantity = 0;
-  rejectForm.remark = "";
+  substandardForm.quantity = 0;
+  substandardForm.remark = "";
 };
 
 // 删除待提交项
@@ -463,15 +595,15 @@ const removeNormalItem = (index: number) => {
   pendingNormalList.value.splice(index, 1);
 };
 
-const removeRejectItem = (index: number) => {
-  pendingRejectList.value.splice(index, 1);
+const removeSubstandardItem = (index: number) => {
+  pendingSubstandardList.value.splice(index, 1);
 };
 
 // 清空所有待提交项
 const handleClearAll = () => {
   pendingNormalList.value = [];
-  pendingRejectList.value = [];
-  rejectCollapse.value = [];
+  pendingSubstandardList.value = [];
+  substandardCollapse.value = [];
 };
 
 // 批量提交
@@ -485,7 +617,8 @@ const handleBatchSubmit = async () => {
     return;
   }
 
-  const total = pendingNormalList.value.length + pendingRejectList.value.length;
+  const total =
+    pendingNormalList.value.length + pendingSubstandardList.value.length;
   if (total === 0) {
     ElMessage.warning("请先添加产品");
     return;
@@ -510,18 +643,18 @@ const handleBatchSubmit = async () => {
       });
       successCount++;
     } catch (error: any) {
-      errorMsg += `等级内-${gradeMap[item.grade]}: ${error.message || "失败"}; `;
+      errorMsg += `成品-${gradeMap[item.grade]}: ${error.message || "失败"}; `;
     }
   }
 
   // 提交等外品
-  for (const item of pendingRejectList.value) {
+  for (const item of pendingSubstandardList.value) {
     try {
-      await request.post("/rejects", {
+      await request.post("/substandards", {
         date: commonData.date,
         batchNo: commonData.batchNo,
         shift: commonData.shift,
-        rejectType: item.rejectType,
+        substandardType: item.substandardType,
         sourceGrade: item.sourceGrade,
         spec: item.spec,
         quantity: item.quantity,
@@ -530,7 +663,7 @@ const handleBatchSubmit = async () => {
       });
       successCount++;
     } catch (error: any) {
-      errorMsg += `等外品-${item.rejectType}: ${error.message || "失败"}; `;
+      errorMsg += `等外品-${item.substandardType}: ${error.message || "失败"}; `;
     }
   }
 
@@ -539,8 +672,8 @@ const handleBatchSubmit = async () => {
   if (successCount > 0) {
     ElMessage.success(`成功提交 ${successCount} 条记录`);
     pendingNormalList.value = [];
-    pendingRejectList.value = [];
-    rejectCollapse.value = [];
+    pendingSubstandardList.value = [];
+    substandardCollapse.value = [];
     fetchTodayRecords();
   }
 
@@ -553,10 +686,12 @@ const handleBatchSubmit = async () => {
 const handleBatchExpand = (row: BatchRecord) => {
   // 展开时从缓存数据中填充产品列表
   row.normalProducts = allNormalRecords.value.filter(
-    (r) => r.date === row.date && r.batchNo === row.batchNo && r.shift === row.shift
+    (r) =>
+      r.date === row.date && r.batchNo === row.batchNo && r.shift === row.shift,
   );
-  row.rejectProducts = allRejectRecords.value.filter(
-    (r) => r.date === row.date && r.batchNo === row.batchNo && r.shift === row.shift
+  row.substandardProducts = allSubstandardRecords.value.filter(
+    (r) =>
+      r.date === row.date && r.batchNo === row.batchNo && r.shift === row.shift,
   );
 };
 
@@ -564,17 +699,21 @@ const handleBatchExpand = (row: BatchRecord) => {
 const fetchTodayRecords = async () => {
   loading.value = true;
   try {
-    const [normalRes, rejectRes] = await Promise.all([
+    const [normalRes, substandardRes] = await Promise.all([
       request.get("/production"),
-      request.get("/rejects"),
+      request.get("/substandards"),
     ]);
 
-    const allNormal: ProductionRecord[] = Array.isArray(normalRes) ? normalRes : [];
-    const allReject: RejectRecord[] = Array.isArray(rejectRes) ? rejectRes : [];
+    const allNormal: ProductionRecord[] = Array.isArray(normalRes)
+      ? normalRes
+      : [];
+    const allSubstandard: SubstandardRecord[] = Array.isArray(substandardRes)
+      ? substandardRes
+      : [];
 
     // 缓存所有记录
     allNormalRecords.value = allNormal;
-    allRejectRecords.value = allReject;
+    allSubstandardRecords.value = allSubstandard;
 
     // 过滤今日记录
     const today = new Date();
@@ -585,15 +724,23 @@ const fetchTodayRecords = async () => {
     const todayNormal = allNormal.filter((r) => {
       const parts = r.date?.split(/[.\-]/) || [];
       if (parts.length >= 3 && parts[0] && parts[1] && parts[2]) {
-        return parseInt(parts[0]) === year && parseInt(parts[1]) === month && parseInt(parts[2]) === day;
+        return (
+          parseInt(parts[0]) === year &&
+          parseInt(parts[1]) === month &&
+          parseInt(parts[2]) === day
+        );
       }
       return false;
     });
 
-    const todayReject = allReject.filter((r) => {
+    const todaySubstandard = allSubstandard.filter((r: any) => {
       const parts = r.date?.split(/[.\-]/) || [];
       if (parts.length >= 3 && parts[0] && parts[1] && parts[2]) {
-        return parseInt(parts[0]) === year && parseInt(parts[1]) === month && parseInt(parts[2]) === day;
+        return (
+          parseInt(parts[0]) === year &&
+          parseInt(parts[1]) === month &&
+          parseInt(parts[2]) === day
+        );
       }
       return false;
     });
@@ -609,11 +756,11 @@ const fetchTodayRecords = async () => {
           shift: r.shift,
           batchNo: r.batchNo,
           normalCount: 0,
-          rejectCount: 0,
+          substandardCount: 0,
           totalQuantity: 0,
           totalWeight: 0,
           normalProducts: [],
-          rejectProducts: [],
+          substandardProducts: [],
         });
       }
       const batch = batchMap.get(key)!;
@@ -622,7 +769,7 @@ const fetchTodayRecords = async () => {
       batch.totalWeight += r.weight || 0;
     });
 
-    todayReject.forEach((r) => {
+    todaySubstandard.forEach((r: any) => {
       const key = `${r.date}-${r.batchNo}-${r.shift}`;
       if (!batchMap.has(key)) {
         batchMap.set(key, {
@@ -630,15 +777,15 @@ const fetchTodayRecords = async () => {
           shift: r.shift,
           batchNo: r.batchNo,
           normalCount: 0,
-          rejectCount: 0,
+          substandardCount: 0,
           totalQuantity: 0,
           totalWeight: 0,
           normalProducts: [],
-          rejectProducts: [],
+          substandardProducts: [],
         });
       }
       const batch = batchMap.get(key)!;
-      batch.rejectCount++;
+      batch.substandardCount++;
       batch.totalQuantity += r.quantity || 0;
       batch.totalWeight += r.weight || 0;
     });

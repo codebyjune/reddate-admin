@@ -253,7 +253,7 @@ const fetchRecords = async () => {
   try {
     const [normalRes, rejectRes] = await Promise.all([
       request.get("/production"),
-      request.get("/rejects"),
+      request.get("/substandards"),
     ]);
 
     let allNormal: ProductionRecord[] = Array.isArray(normalRes) ? normalRes : [];
@@ -386,7 +386,7 @@ const handleDeleteReject = async (record: RejectRecord) => {
       "提示",
       { confirmButtonText: "确定", cancelButtonText: "取消", type: "warning" }
     );
-    await request.delete(`/rejects/${record.id}`);
+    await request.delete(`/substandards/${record.id}`);
     ElMessage.success("删除成功");
     fetchRecords();
   } catch (error: any) {

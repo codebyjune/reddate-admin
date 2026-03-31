@@ -102,22 +102,22 @@ model ProductionRecord {
   @@map("production_records")
 }
 
-// 等外品记录（残次品）
-model RejectProduct {
-  id          Int      @id @default(autoincrement())
-  date        String                     // 生产日期
-  batchNo     String                     // 批次号
-  shift       String   @default("day")   // 班次：day(白班)、night(夜班)
-  rejectType  String                     // 等外品类型：变形、裂口、干条、烂枣
-  sourceGrade String                     // 来源等级
-  spec        Float                      // 规格(kg/件) - 固定值
-  quantity    Int                        // 数量(件)
-  weight      Float                      // 重量(kg)
-  remark      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+// 等外品记录
+model SubstandardProduct {
+  id              Int      @id @default(autoincrement())
+  date            String                     // 生产日期
+  batchNo         String                     // 批次号
+  shift           String   @default("day")   // 班次：day(白班)、night(夜班)
+  substandardType String                     // 等外品类型：变形、裂口、干条、烂枣
+  sourceGrade     String                     // 来源等级
+  spec            Float                      // 规格(kg/件) - 固定值
+  quantity        Int                        // 数量(件)
+  weight          Float                      // 重量(kg)
+  remark          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  @@map("reject_products")
+  @@map("substandard_products")
 }
 
 // 销售记录（现货销售 + 期货交割）
@@ -131,7 +131,7 @@ model SalesRecord {
   customerAddress String?                      // 客户地址（现货）
 
   // 产品信息
-  productCategory String   @default("normal")  // 产品类型：normal(等级内)、reject(等外品)
+  productCategory String   @default("normal")  // 产品类型：normal(等级内)、substandard(等外品)
   productLevel    String   @default("Grade1")  // 产品等级/等外品类型
   spec            String?                      // 规格(kg/件)
   quantity        Int                          // 销售数量（件）

@@ -135,27 +135,27 @@ export const getAvailableByGrade = async (req: Request, res: Response) => {
 };
 
 // 获取等外品可销售库存（按类型）
-export const getRejectAvailableInventory = async (_req: Request, res: Response) => {
+export const getSubstandardAvailableInventory = async (_req: Request, res: Response) => {
   try {
     // 获取所有等外品生产记录
-    const rejectRecords = await prisma.rejectProduct.findMany({
-      select: { rejectType: true, quantity: true, weight: true },
+    const substandardRecords = await prisma.substandardProduct.findMany({
+      select: { substandardType: true, quantity: true, weight: true },
     });
 
-    // 获取所有等外品销售记录（productCategory = 'reject'）
+    // 获取所有等外品销售记录（productCategory = 'substandard'）
     const salesRecords = await prisma.salesRecord.findMany({
-      where: { productCategory: "reject" },
+      where: { productCategory: "substandard" },
       select: { productLevel: true, quantity: true, netWeight: true },
     });
 
     // 按类型汇总生产数量
     const productionByType: Record<string, { quantity: number; weight: number }> = {};
-    rejectRecords.forEach((r) => {
-      if (!productionByType[r.rejectType]) {
-        productionByType[r.rejectType] = { quantity: 0, weight: 0 };
+    substandardRecords.forEach((r) => {
+      if (!productionByType[r.substandardType]) {
+        productionByType[r.substandardType] = { quantity: 0, weight: 0 };
       }
-      productionByType[r.rejectType].quantity += r.quantity || 0;
-      productionByType[r.rejectType].weight += r.weight || 0;
+      productionByType[r.substandardType].quantity += r.quantity || 0;
+      productionByType[r.substandardType].weight += r.weight || 0;
     });
 
     // 按类型汇总销售数量
@@ -177,7 +177,7 @@ export const getRejectAvailableInventory = async (_req: Request, res: Response) 
     ]);
 
     const inventory: Array<{
-      rejectType: string;
+      substandardType: string;
       typeName: string;
       produced: number;
       sold: number;
@@ -194,7 +194,7 @@ export const getRejectAvailableInventory = async (_req: Request, res: Response) 
       const soldWeight = salesByType[type]?.weight || 0;
 
       inventory.push({
-        rejectType: type,
+        substandardType: type,
         typeName: type,
         produced,
         sold,
@@ -207,7 +207,7 @@ export const getRejectAvailableInventory = async (_req: Request, res: Response) 
 
     // 按类型排序
     const typeOrder = ["变形", "裂口", "干条", "烂枣"];
-    inventory.sort((a, b) => typeOrder.indexOf(a.rejectType) - typeOrder.indexOf(b.rejectType));
+    inventory.sort((a, b) => typeOrder.indexOf(a.substandardType) - typeOrder.indexOf(b.substandardType));
 
     res.json(inventory);
   } catch (error) {

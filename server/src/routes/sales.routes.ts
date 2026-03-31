@@ -1,7 +1,10 @@
 import { Router } from "express";
 import * as salesController from "../controllers/sales.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
+
+router.use(authMiddleware);
 
 // 获取销售记录列表
 router.get("/", salesController.getSalesRecords);

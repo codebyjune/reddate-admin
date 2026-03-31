@@ -52,8 +52,11 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     Header: typeof import('./src/components/Header.vue')['default']
+    MaterialInventory: typeof import('./src/components/MaterialInventory.vue')['default']
+    ProductInventory: typeof import('./src/components/ProductInventory.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SubstandardInventory: typeof import('./src/components/SubstandardInventory.vue')['default']
   }
   export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

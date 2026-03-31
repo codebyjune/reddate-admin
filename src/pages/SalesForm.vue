@@ -27,26 +27,33 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-blue-500 pl-2"
           >
-            {{ formData.salesType === '现货' ? '销售信息' : '交割信息' }}
+            {{ formData.salesType === "现货" ? "销售信息" : "交割信息" }}
           </h3>
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item :label="formData.salesType === '现货' ? '销售日期' : '交割日期'" prop="salesDate">
+              <el-form-item
+                :label="formData.salesType === '现货' ? '销售日期' : '交割日期'"
+                prop="salesDate"
+              >
                 <el-date-picker
                   v-model="formData.salesDate"
                   type="date"
-                  :placeholder="formData.salesType === '现货' ? '选择销售日期' : '选择交割日期'"
+                  :placeholder="
+                    formData.salesType === '现货'
+                      ? '选择销售日期'
+                      : '选择交割日期'
+                  "
                   value-format="YYYY-MM-DD"
                   style="width: 100%"
                 />
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item :label="formData.salesType === '现货' ? '销售单号' : '交割单号'" prop="salesNo">
-                <el-input
-                  v-model="formData.salesNo"
-                  placeholder="请输入单号"
-                />
+              <el-form-item
+                :label="formData.salesType === '现货' ? '销售单号' : '交割单号'"
+                prop="salesNo"
+              >
+                <el-input v-model="formData.salesNo" placeholder="请输入单号" />
               </el-form-item>
             </el-col>
             <!-- 期货交割：合约月份 -->
@@ -141,17 +148,31 @@
           <el-row :gutter="20">
             <el-col :span="6">
               <el-form-item label="产品类型" prop="productCategory">
-                <el-radio-group v-model="formData.productCategory" @change="handleCategoryChange">
+                <el-radio-group
+                  v-model="formData.productCategory"
+                  @change="handleCategoryChange"
+                >
                   <el-radio value="normal">等级内</el-radio>
-                  <el-radio value="reject">等外品</el-radio>
+                  <el-radio value="substandard">等外品</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item :label="formData.productCategory === 'normal' ? '产品等级' : '等外品类型'" prop="productLevel">
+              <el-form-item
+                :label="
+                  formData.productCategory === 'normal'
+                    ? '产品等级'
+                    : '等外品类型'
+                "
+                prop="productLevel"
+              >
                 <el-select
                   v-model="formData.productLevel"
-                  :placeholder="formData.productCategory === 'normal' ? '请选择产品等级' : '请选择等外品类型'"
+                  :placeholder="
+                    formData.productCategory === 'normal'
+                      ? '请选择产品等级'
+                      : '请选择等外品类型'
+                  "
                   style="width: 100%"
                 >
                   <template v-if="formData.productCategory === 'normal'">
@@ -169,23 +190,29 @@
                     <el-option label="烂枣" value="烂枣" />
                   </template>
                 </el-select>
-                <div v-if="currentInventory !== null" class="text-xs mt-1" :class="currentInventory > 0 ? 'text-green-500' : 'text-red-500'">
+                <div
+                  v-if="currentInventory !== null"
+                  class="text-xs mt-1"
+                  :class="
+                    currentInventory > 0 ? 'text-green-500' : 'text-red-500'
+                  "
+                >
                   可销售库存: {{ currentInventory }} 件
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="6">
               <el-form-item label="规格" prop="spec">
-                <el-input
-                  v-model="formData.spec"
-                  placeholder="如：5"
-                >
+                <el-input v-model="formData.spec" placeholder="如：5">
                   <template #append>kg/件</template>
                 </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="6">
-              <el-form-item :label="formData.salesType === '现货' ? '销售数量' : '交割数量'" prop="quantity">
+              <el-form-item
+                :label="formData.salesType === '现货' ? '销售数量' : '交割数量'"
+                prop="quantity"
+              >
                 <el-input
                   v-model.number="formData.quantity"
                   placeholder="请输入数量"
@@ -218,7 +245,12 @@
           </h3>
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item :label="formData.salesType === '现货' ? '销售单价' : '交割结算价'" prop="unitPrice">
+              <el-form-item
+                :label="
+                  formData.salesType === '现货' ? '销售单价' : '交割结算价'
+                "
+                prop="unitPrice"
+              >
                 <el-input
                   v-model.number="formData.unitPrice"
                   placeholder="请输入单价"
@@ -230,7 +262,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item :label="formData.salesType === '现货' ? '总金额' : '结算金额'" prop="totalAmount">
+              <el-form-item
+                :label="formData.salesType === '现货' ? '总金额' : '结算金额'"
+                prop="totalAmount"
+              >
                 <el-input
                   v-model="totalAmountDisplay"
                   placeholder="自动计算"
@@ -337,7 +372,10 @@
           </h3>
           <el-row :gutter="20">
             <el-col :span="8">
-              <el-form-item :label="formData.salesType === '现货' ? '销售员' : '交割经办人'" prop="salesPerson">
+              <el-form-item
+                :label="formData.salesType === '现货' ? '销售员' : '交割经办人'"
+                prop="salesPerson"
+              >
                 <el-input
                   v-model="formData.salesPerson"
                   placeholder="请输入姓名"
@@ -379,7 +417,7 @@ interface SalesInfo {
   customerName: string;
   customerPhone: string;
   customerAddress: string;
-  productCategory: string;  // normal: 等级内, reject: 等外品
+  productCategory: string; // normal: 等级内, reject: 等外品
   productLevel: string;
   spec: string;
   quantity: number;
@@ -430,9 +468,13 @@ const formData = reactive<SalesInfo>({
 const formRef = ref<FormInstance>();
 
 // 库存数据
-const inventoryData = ref<Record<string, { available: number; gradeName: string }>>({});
+const inventoryData = ref<
+  Record<string, { available: number; gradeName: string }>
+>({});
 // 等外品库存数据
-const rejectInventoryData = ref<Record<string, { available: number; typeName: string }>>({});
+const substandardInventoryData = ref<
+  Record<string, { available: number; typeName: string }>
+>({});
 
 // 获取库存数据
 const fetchInventory = async () => {
@@ -443,18 +485,20 @@ const fetchInventory = async () => {
       normalRes.forEach((item: any) => {
         inventoryData.value[item.grade] = {
           available: item.available,
-          gradeName: item.gradeName
+          gradeName: item.gradeName,
         };
       });
     }
 
     // 获取等外品库存
-    const rejectRes = await request.get("/inventory/reject-available");
-    if (Array.isArray(rejectRes)) {
-      rejectRes.forEach((item: any) => {
-        rejectInventoryData.value[item.rejectType] = {
+    const substandardRes = await request.get(
+      "/inventory/substandard-available",
+    );
+    if (Array.isArray(substandardRes)) {
+      substandardRes.forEach((item: any) => {
+        substandardInventoryData.value[item.substandardType] = {
           available: item.available,
-          typeName: item.typeName
+          typeName: item.typeName,
         };
       });
     }
@@ -487,8 +531,9 @@ const currentInventory = computed(() => {
     const gradeInventory = inventoryData.value[formData.productLevel];
     return gradeInventory ? gradeInventory.available : null;
   } else {
-    const rejectInventory = rejectInventoryData.value[formData.productLevel];
-    return rejectInventory ? rejectInventory.available : null;
+    const substandardInventory =
+      substandardInventoryData.value[formData.productLevel];
+    return substandardInventory ? substandardInventory.available : null;
   }
 });
 
@@ -498,7 +543,9 @@ const calculateTotal = () => {
 
 const rules = reactive<FormRules>({
   salesDate: [{ required: true, message: "请选择日期", trigger: "change" }],
-  productLevel: [{ required: true, message: "请选择产品等级", trigger: "change" }],
+  productLevel: [
+    { required: true, message: "请选择产品等级", trigger: "change" },
+  ],
   quantity: [
     { required: true, message: "请输入数量", trigger: "blur" },
     { type: "number", min: 1, message: "数量必须大于0", trigger: "blur" },
@@ -561,15 +608,19 @@ const handleSave = async () => {
       const gradeInventory = inventoryData.value[formData.productLevel];
       if (gradeInventory && gradeInventory.available < formData.quantity) {
         ElMessage.warning(
-          `${gradeInventory.gradeName}库存不足！当前可销售库存：${gradeInventory.available} 件，需销售：${formData.quantity} 件`
+          `${gradeInventory.gradeName}库存不足！当前可销售库存：${gradeInventory.available} 件，需销售：${formData.quantity} 件`,
         );
         return;
       }
     } else {
-      const rejectInventory = rejectInventoryData.value[formData.productLevel];
-      if (rejectInventory && rejectInventory.available < formData.quantity) {
+      const substandardInventory =
+        substandardInventoryData.value[formData.productLevel];
+      if (
+        substandardInventory &&
+        substandardInventory.available < formData.quantity
+      ) {
         ElMessage.warning(
-          `${rejectInventory.typeName}库存不足！当前可销售库存：${rejectInventory.available} 件，需销售：${formData.quantity} 件`
+          `${substandardInventory.typeName}库存不足！当前可销售库存：${substandardInventory.available} 件，需销售：${formData.quantity} 件`,
         );
         return;
       }
@@ -594,5 +645,4 @@ const handleCancel = () => {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

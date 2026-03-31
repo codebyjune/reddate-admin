@@ -1,7 +1,10 @@
 import { Router } from "express";
 import * as inboundController from "../controllers/inbound.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
+
+router.use(authMiddleware);
 
 // 获取入库单列表
 router.get("/", inboundController.getInboundDeliveries);

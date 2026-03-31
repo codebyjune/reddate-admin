@@ -2,8 +2,11 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
+
+router.use(authMiddleware);
 
 // 确保上传目录存在
 const uploadDir = path.join(__dirname, "../../uploads");

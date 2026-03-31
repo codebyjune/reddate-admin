@@ -1,7 +1,10 @@
 import { Router } from "express";
 import * as contractController from "../controllers/contract.controller";
+import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
+
+router.use(authMiddleware);
 
 // 获取合同列表
 router.get("/", contractController.getContracts);

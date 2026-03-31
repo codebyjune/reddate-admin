@@ -192,6 +192,7 @@
 import { reactive, ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
+import request from "@/utils/request";
 
 const route = useRoute();
 const router = useRouter();
@@ -330,32 +331,23 @@ const handleSave = async () => {
 
     try {
       loading.value = true;
-      const token = localStorage.getItem("token");
-      const url = isEdit.value ? `/api/inbound/${editId.value}` : "/api/inbound";
-      const method = isEdit.value ? "PUT" : "POST";
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          products: productList.value,
-        }),
-      });
+      const payload = {
+        ...formData,
+        products: productList.value,
+      };
 
-      if (res.ok) {
-        ElMessage.success(isEdit.value ? "更新成功" : "保存成功");
-        router.push("/inbound");
+      if (isEdit.value) {
+        await request.put(`/inbound/${editId.value}`, payload);
       } else {
-        const err = await res.json();
-        ElMessage.error(err.error || "保存失败");
+        await request.post("/inbound", payload);
       }
-    } catch (error) {
+
+      ElMessage.success(isEdit.value ? "更新成功" : "保存成功");
+      router.push("/inbound");
+    } catch (error: any) {
       console.error("保存失败:", error);
-      ElMessage.error("保存失败");
+      ElMessage.error(error.message || "保存失败");
     } finally {
       loading.value = false;
     }
@@ -370,18 +362,7 @@ const handleCancel = () => {
 const loadInboundData = async () => {
   try {
     loading.value = true;
-    const token = localStorage.getItem("token");
-    const res = await fetch(`/api/inbound/${editId.value}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!res.ok) {
-      ElMessage.error("加载数据失败");
-      router.push("/inbound");
-      return;
-    }
-
-    const data = await res.json();
+    const data = await request.get<any>(`/inbound/${editId.value}`);
 
     // 填充表单数据
     Object.assign(formData, {

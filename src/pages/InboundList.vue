@@ -117,6 +117,7 @@ import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import request from "@/utils/request";
 
 const router = useRouter();
 const loading = ref(false);
@@ -151,11 +152,7 @@ const calculateTotalWeight = (products: any[]) => {
 const fetchData = async () => {
   loading.value = true;
   try {
-    const token = localStorage.getItem("token");
-    const res = await fetch("/api/inbound", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    let data = await res.json();
+    let data = await request.get<any[]>("/inbound");
 
     // 筛选
     if (filterForm.deliveryNo) {
@@ -212,20 +209,13 @@ const handleDelete = async (row: any) => {
       type: "warning",
     });
 
-    const token = localStorage.getItem("token");
-    const res = await fetch(`/api/inbound/${row.id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (res.ok) {
-      ElMessage.success("删除成功");
-      fetchData();
-    } else {
-      ElMessage.error("删除失败");
+    await request.delete(`/inbound/${row.id}`);
+    ElMessage.success("删除成功");
+    fetchData();
+  } catch (error: any) {
+    if (error !== "cancel") {
+      ElMessage.error(error.message || "删除失败");
     }
-  } catch (error) {
-    // 用户取消
   }
 };
 
