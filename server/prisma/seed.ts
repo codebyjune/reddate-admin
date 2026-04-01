@@ -1,6 +1,11 @@
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const adapter = new PrismaBetterSqlite3({
+  url: "file:./prisma/dev.db",
+});
+
+const prisma = new PrismaClient({ adapter });
 
 // 模拟数据
 const mockContracts = [
