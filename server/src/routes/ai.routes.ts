@@ -1,3 +1,4 @@
+import { Readable } from "node:stream";
 import { Router } from "express";
 import { convertToModelMessages, streamText } from "ai";
 import { createDeepSeek } from "@ai-sdk/deepseek";
@@ -38,12 +39,23 @@ router.post("/chat", authMiddleware, async (req, res) => {
     }
 
     const modelMessages = await convertToModelMessages(messages);
+    const abortController = new AbortController();
+
+    const abortStream = () => {
+      if (!abortController.signal.aborted) {
+        abortController.abort();
+      }
+    };
+
+    req.on("close", abortStream);
+    res.on("finish", abortStream);
 
     // 调用 DeepSeek 流式生成
     const result = streamText({
       model: deepseek("deepseek-chat"),
       system: SYSTEM_PROMPT,
       messages: modelMessages,
+      abortSignal: abortController.signal,
     });
 
     const response = result.toUIMessageStreamResponse();
@@ -53,23 +65,22 @@ router.post("/chat", authMiddleware, async (req, res) => {
       res.setHeader(key, value);
     });
 
-    const reader = response.body?.getReader();
-    if (!reader) {
+    if (!response.body) {
+      req.off("close", abortStream);
+      res.off("finish", abortStream);
       return res.status(500).json({ error: "AI 响应流不可用" });
     }
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(Buffer.from(value));
-    }
-
-    res.end();
+    Readable.fromWeb(response.body).pipe(res);
   } catch (error) {
     console.error("AI 对话错误:", error);
-    res.status(500).json({
-      error: error instanceof Error ? error.message : "AI 服务调用失败",
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: error instanceof Error ? error.message : "AI 服务调用失败",
+      });
+    } else {
+      res.end();
+    }
   }
 });
 

@@ -96,6 +96,8 @@
             resize="none"
             :disabled="isLoading"
             @keydown="handleKeydown"
+            @compositionstart="handleCompositionStart"
+            @compositionend="handleCompositionEnd"
           />
           <el-button
             type="primary"
@@ -124,6 +126,7 @@ import type { UIMessage } from "ai";
 
 const messagesContainer = ref<HTMLDivElement>();
 const input = ref("");
+const isComposing = ref(false);
 
 // 创建 Chat 实例，使用 DefaultChatTransport 配置 API 端点
 const chat = new Chat({
@@ -177,16 +180,36 @@ const sendMessage = async () => {
   const text = input.value.trim();
   if (!text || isLoading.value) return;
 
-  await chat.sendMessage({ text });
-  input.value = "";
+  try {
+    await chat.sendMessage({ text });
+    input.value = "";
+  } catch (error) {
+    console.error("AI 消息发送失败:", error);
+    input.value = text;
+    ElMessage.error(
+      error instanceof Error ? error.message : "AI 对话发送失败，请稍后重试"
+    );
+  }
 };
 
 // 键盘事件：Enter 发送，Shift+Enter 换行
 const handleKeydown = (e: KeyboardEvent) => {
+  if (e.isComposing || isComposing.value) {
+    return;
+  }
+
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
   }
+};
+
+const handleCompositionStart = () => {
+  isComposing.value = true;
+};
+
+const handleCompositionEnd = () => {
+  isComposing.value = false;
 };
 </script>
 
