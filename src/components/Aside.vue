@@ -49,6 +49,10 @@ const isAdmin = computed(() => authStore.isAdmin);
       <el-menu-item index="/sales">销售录入</el-menu-item>
       <el-menu-item index="/sales-list">销售列表</el-menu-item>
     </el-sub-menu>
+    <el-menu-item index="/ai-dialog">
+      <el-icon><ChatDotRound /></el-icon>
+      <span>AI 助手</span>
+    </el-menu-item>
     <el-sub-menu index="system" v-if="isAdmin">
       <template #title>
         <el-icon><Setting /></el-icon>
