@@ -60,8 +60,8 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
-import { useLayoutStore } from "../stores/layout";
-import { useAuthStore } from "../stores/auth";
+import { useLayoutStore } from "@/stores/layout";
+import { useAuthStore } from "@/stores/auth";
 
 const router = useRouter();
 const layoutStore = useLayoutStore();

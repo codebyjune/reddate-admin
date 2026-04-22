@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useLayoutStore } from "../stores/layout";
-import { useAuthStore } from "../stores/auth";
+import { useLayoutStore } from "@/stores/layout";
+import { useAuthStore } from "@/stores/auth";
 
 const layoutStore = useLayoutStore();
 const authStore = useAuthStore();

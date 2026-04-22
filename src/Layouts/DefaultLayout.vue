@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Aside from "../components/Aside.vue";
-import Header from "../components/Header.vue";
-import { useLayoutStore } from "../stores/layout";
+import Aside from "@/components/Aside.vue";
+import Header from "@/components/Header.vue";
+import { useLayoutStore } from "@/stores/layout";
 
 const layoutStore = useLayoutStore();
 </script>

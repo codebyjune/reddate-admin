@@ -1,17 +1,17 @@
 import { createWebHistory, createRouter } from "vue-router";
-import DefaultLayout from "../Layouts/DefaultLayout.vue";
-import InventoryOverview from "../pages/InventoryOverview.vue";
-import ProductionPage from "../pages/RedDateProcessForm.vue";
-import ProductionListPage from "../pages/ProductionList.vue";
-import InboundPage from "../pages/InboundDeliveryForm.vue";
-import InboundListPage from "../pages/InboundList.vue";
-import ContractPage from "../pages/ContractForm.vue";
-import ContractListPage from "../pages/ContractList.vue";
-import SalesPage from "../pages/SalesForm.vue";
-import SalesListPage from "../pages/SalesList.vue";
-import UserManagement from "../pages/UserManagement.vue";
-import Login from "../pages/Login.vue";
-import Register from "../pages/Register.vue";
+import DefaultLayout from "@/Layouts/DefaultLayout.vue";
+import InventoryOverview from "@/pages/inventory/InventoryOverview.vue";
+import ProductionPage from "@/pages/production/ProductionForm.vue";
+import ProductionListPage from "@/pages/production/ProductionList.vue";
+import InboundPage from "@/pages/inbound/InboundForm.vue";
+import InboundListPage from "@/pages/inbound/InboundList.vue";
+import ContractPage from "@/pages/contract/ContractForm.vue";
+import ContractListPage from "@/pages/contract/ContractList.vue";
+import SalesPage from "@/pages/sales/SalesForm.vue";
+import SalesListPage from "@/pages/sales/SalesList.vue";
+import UserManagement from "@/pages/user/UserManagement.vue";
+import Login from "@/pages/auth/Login.vue";
+import Register from "@/pages/auth/Register.vue";
 
 const routes = [
   {
