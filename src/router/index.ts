@@ -1,17 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
 import DefaultLayout from "@/Layouts/DefaultLayout.vue";
-import InventoryOverview from "@/pages/inventory/InventoryOverview.vue";
-import ProductionPage from "@/pages/production/ProductionForm.vue";
-import ProductionListPage from "@/pages/production/ProductionList.vue";
-import InboundPage from "@/pages/inbound/InboundForm.vue";
-import InboundListPage from "@/pages/inbound/InboundList.vue";
-import ContractPage from "@/pages/contract/ContractForm.vue";
-import ContractListPage from "@/pages/contract/ContractList.vue";
-import SalesPage from "@/pages/sales/SalesForm.vue";
-import SalesListPage from "@/pages/sales/SalesList.vue";
-import UserManagement from "@/pages/user/UserManagement.vue";
-import Login from "@/pages/auth/Login.vue";
-import Register from "@/pages/auth/Register.vue";
 
 const routes = [
   {
@@ -26,57 +14,62 @@ const routes = [
       {
         path: "inventory",
         name: "inventory",
-        component: InventoryOverview,
+        component: () => import("@/pages/inventory/InventoryOverview.vue"),
       },
       {
         path: "production",
         name: "production",
-        component: ProductionPage,
+        component: () => import("@/pages/production/ProductionForm.vue"),
       },
       {
         path: "production-list",
         name: "production-list",
-        component: ProductionListPage,
+        component: () => import("@/pages/production/ProductionList.vue"),
       },
       {
         path: "inbound",
         name: "inbound",
-        component: InboundListPage,
+        component: () => import("@/pages/inbound/InboundList.vue"),
       },
       {
         path: "inbound/create",
         name: "inbound-create",
-        component: InboundPage,
+        component: () => import("@/pages/inbound/InboundForm.vue"),
       },
       {
         path: "inbound/edit/:id",
         name: "inbound-edit",
-        component: InboundPage,
+        component: () => import("@/pages/inbound/InboundForm.vue"),
       },
       {
         path: "contract",
         name: "contract",
-        component: ContractPage,
+        component: () => import("@/pages/contract/ContractForm.vue"),
       },
       {
         path: "contract-list",
         name: "contract-list",
-        component: ContractListPage,
+        component: () => import("@/pages/contract/ContractList.vue"),
       },
       {
         path: "sales",
         name: "sales",
-        component: SalesPage,
+        component: () => import("@/pages/sales/SalesForm.vue"),
       },
       {
         path: "sales-list",
         name: "sales-list",
-        component: SalesListPage,
+        component: () => import("@/pages/sales/SalesList.vue"),
+      },
+      {
+        path: "ai-dialog",
+        name: "ai-dialog",
+        component: () => import("@/pages/ai/AIDialog.vue"),
       },
       {
         path: "user-management",
         name: "user-management",
-        component: UserManagement,
+        component: () => import("@/pages/user/UserManagement.vue"),
         meta: { requiresAdmin: true },
       },
     ],
@@ -84,13 +77,13 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: Login,
+    component: () => import("@/pages/auth/Login.vue"),
     meta: { guest: true },
   },
   {
     path: "/register",
     name: "register",
-    component: Register,
+    component: () => import("@/pages/auth/Register.vue"),
     meta: { guest: true },
   },
 ];

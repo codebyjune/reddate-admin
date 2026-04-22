@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ai-sdk/vue": "^3.0.168",
     "@element-plus/icons-vue": "^2.3.2",
     "@tailwindcss/vite": "^4.2.1",
+    "ai": "^6.0.168",
     "axios": "^1.13.6",
     "echarts": "^6.0.0",
     "element-plus": "^2.13.2",
