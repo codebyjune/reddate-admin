@@ -11,6 +11,7 @@ import uploadRoutes from "./routes/upload.routes";
 import userRoutes from "./routes/user.routes";
 import inventoryRoutes from "./routes/inventory.routes";
 import aiRoutes from "./routes/ai.routes";
+import knowledgeRoutes from "./routes/knowledge.routes";
 
 const app: express.Application = express();
 
@@ -32,6 +33,7 @@ app.use("/api/upload", uploadRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/knowledge", knowledgeRoutes);
 
 // 健康检查
 app.get("/health", (req, res) => {

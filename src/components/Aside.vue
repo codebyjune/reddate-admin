@@ -53,6 +53,10 @@ const isAdmin = computed(() => authStore.isAdmin);
       <el-icon><ChatDotRound /></el-icon>
       <span>AI 助手</span>
     </el-menu-item>
+    <el-menu-item index="/knowledge-documents">
+      <el-icon><Document /></el-icon>
+      <span>我的文档</span>
+    </el-menu-item>
     <el-sub-menu index="system" v-if="isAdmin">
       <template #title>
         <el-icon><Setting /></el-icon>
