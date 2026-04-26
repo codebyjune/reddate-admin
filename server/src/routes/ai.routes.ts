@@ -2,6 +2,11 @@ import { Readable } from "node:stream";
 import { Router } from "express";
 import { convertToModelMessages, streamText } from "ai";
 import { createDeepSeek } from "@ai-sdk/deepseek";
+import {
+  formatRetrievedContext,
+  retrieveRelevantChunks,
+  type RetrievedChunk,
+} from "../lib/knowledge/retrieve";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
@@ -24,19 +29,62 @@ const SYSTEM_PROMPT = `你是红枣收购管理系统的 AI 助手。你的职�
 
 请用专业、简洁的中文回答用户问题。`;
 
+const buildRagSystemPrompt = (retrievedContext: string) => {
+  if (!retrievedContext) {
+    return `${SYSTEM_PROMPT}
+
+当前用户还没有可用的知识库参考资料。你可以基于通用知识回答，但如果问题明显依赖用户上传文档，请明确说明未检索到相关文档内容。`;
+  }
+
+  return `${SYSTEM_PROMPT}
+
+以下是从当前用户私有知识库中检索到的参考资料。请优先基于这些资料回答，并尽量引用其中的关键信息。如果参考资料不足以回答，请明确说明资料不足，不要编造文档中不存在的内容。
+
+${retrievedContext}`;
+};
+
 // AI 对话接口 - 返回 AI SDK UI message stream
 router.post("/chat", authMiddleware, async (req, res) => {
   try {
     const { messages } = req.body;
+    const userId = (req as any).user?.userId;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: "messages 必须是数组" });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ error: "未登录" });
     }
 
     // 检查 API Key 是否配置
     if (!process.env.DEEPSEEK_API_KEY) {
       return res.status(500).json({ error: "DEEPSEEK_API_KEY 未配置" });
     }
+
+    const latestUserMessage = [...messages]
+      .reverse()
+      .find((message) => message.role === "user");
+
+    const latestUserText = Array.isArray(latestUserMessage?.parts)
+      ? latestUserMessage.parts
+          .filter((part: any) => part.type === "text")
+          .map((part: any) => part.text)
+          .join("\n")
+          .trim()
+      : "";
+
+    let retrievedChunks: RetrievedChunk[] = [];
+    if (latestUserText) {
+      try {
+        retrievedChunks = await retrieveRelevantChunks(userId, latestUserText);
+      } catch (error) {
+        console.error("知识库检索失败:", error);
+        retrievedChunks = [];
+      }
+    }
+
+    const retrievedContext = formatRetrievedContext(retrievedChunks);
 
     const modelMessages = await convertToModelMessages(messages);
     const abortController = new AbortController();
@@ -53,7 +101,7 @@ router.post("/chat", authMiddleware, async (req, res) => {
     // 调用 DeepSeek 流式生成
     const result = streamText({
       model: deepseek("deepseek-chat"),
-      system: SYSTEM_PROMPT,
+      system: buildRagSystemPrompt(retrievedContext),
       messages: modelMessages,
       abortSignal: abortController.signal,
     });

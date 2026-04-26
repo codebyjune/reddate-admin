@@ -1,10 +1,8 @@
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "@prisma/client";
-
-const adapter = new PrismaBetterSqlite3({
-  url: "file:./prisma/dev.db",
+import { PrismaPg } from "@prisma/adapter-pg";
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
 });
-
 const prisma = new PrismaClient({ adapter });
 
 // 模拟数据
@@ -326,7 +324,9 @@ async function main() {
     } else {
       await prisma.contract.create({ data: contract });
       count++;
-      console.log(`✅ 已创建合同: ${contract.contractNo} - ${contract.partyBName}`);
+      console.log(
+        `✅ 已创建合同: ${contract.contractNo} - ${contract.partyBName}`,
+      );
     }
   }
 

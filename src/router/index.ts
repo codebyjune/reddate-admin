@@ -67,6 +67,11 @@ const routes = [
         component: () => import("@/pages/ai/AIDialog.vue"),
       },
       {
+        path: "knowledge-documents",
+        name: "knowledge-documents",
+        component: () => import("@/pages/ai/KnowledgeDocuments.vue"),
+      },
+      {
         path: "user-management",
         name: "user-management",
         component: () => import("@/pages/user/UserManagement.vue"),
