@@ -168,7 +168,7 @@ const handleDelete = async (document: KnowledgeDocument) => {
     ElMessage.success("删除成功");
     await fetchDocuments();
   } catch (error: any) {
-    if (error === "cancel") {
+    if (error === "cancel" || error === "close") {
       return;
     }
 

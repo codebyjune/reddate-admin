@@ -1,5 +1,5 @@
 import fs from "fs/promises";
-import pdf from "pdf-parse";
+import pdf from "pdf-parse/lib/pdf-parse.js";
 
 export interface ParsedPdfDocument {
   text: string;

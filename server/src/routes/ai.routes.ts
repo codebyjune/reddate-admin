@@ -2,7 +2,11 @@ import { Readable } from "node:stream";
 import { Router } from "express";
 import { convertToModelMessages, streamText } from "ai";
 import { createDeepSeek } from "@ai-sdk/deepseek";
-import { formatRetrievedContext, retrieveRelevantChunks } from "../lib/knowledge/retrieve";
+import {
+  formatRetrievedContext,
+  retrieveRelevantChunks,
+  type RetrievedChunk,
+} from "../lib/knowledge/retrieve";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
@@ -70,9 +74,16 @@ router.post("/chat", authMiddleware, async (req, res) => {
           .trim()
       : "";
 
-    const retrievedChunks = latestUserText
-      ? await retrieveRelevantChunks(userId, latestUserText)
-      : [];
+    let retrievedChunks: RetrievedChunk[] = [];
+    if (latestUserText) {
+      try {
+        retrievedChunks = await retrieveRelevantChunks(userId, latestUserText);
+      } catch (error) {
+        console.error("知识库检索失败:", error);
+        retrievedChunks = [];
+      }
+    }
+
     const retrievedContext = formatRetrievedContext(retrievedChunks);
 
     const modelMessages = await convertToModelMessages(messages);

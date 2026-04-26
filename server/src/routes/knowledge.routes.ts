@@ -1,22 +1,20 @@
-import { Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import fs from "fs";
 import multer from "multer";
 import path from "path";
 import * as knowledgeController from "../controllers/knowledge.controller";
+import { ensureKnowledgeUploadDir, knowledgeUploadDir } from "../lib/knowledge/paths";
 import { authMiddleware } from "../middlewares/auth.middleware";
 
 const router: Router = Router();
 
 router.use(authMiddleware);
 
-const uploadDir = path.join(__dirname, "../../uploads/knowledge");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
+ensureKnowledgeUploadDir();
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, uploadDir);
+    cb(null, knowledgeUploadDir);
   },
   filename: (_req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -42,8 +40,33 @@ const upload = multer({
   },
 });
 
+const handleKnowledgeUpload = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  upload.single("file")(req, res, (err) => {
+    if (!err) {
+      next();
+      return;
+    }
+
+    if (err instanceof multer.MulterError && err.code === "LIMIT_FILE_SIZE") {
+      res.status(413).json({ error: "PDF 文件大小不能超过 20MB" });
+      return;
+    }
+
+    if (err instanceof Error) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+
+    next(err);
+  });
+};
+
 router.get("/documents", knowledgeController.getDocuments);
-router.post("/documents", upload.single("file"), knowledgeController.uploadDocument);
+router.post("/documents", handleKnowledgeUpload, knowledgeController.uploadDocument);
 router.delete("/documents/:id", knowledgeController.deleteDocument);
 
 export default router;

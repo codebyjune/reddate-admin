@@ -55,7 +55,7 @@
       <!-- 输入区域 -->
       <div class=" pt-4 px-2">
         <div class="flex gap-2 ">
-          <el-input v-model="input" type="text" placeholder="请输入您的问题，按 Enter 发送，Shift+Enter 换行..."
+          <el-input v-model="input" type="text" placeholder="请输入您的问题，按 Enter 发送..."
             resize="none" :disabled="isLoading" @keydown="handleKeydown" @compositionstart="handleCompositionStart"
             @compositionend="handleCompositionEnd"
             size="large" class="flex-1" rows="1" style="height: 48px;" />
@@ -152,7 +152,7 @@ const sendMessage = async () => {
   }
 };
 
-// 键盘事件：Enter 发送，Shift+Enter 换行
+// 键盘事件：Enter 发送
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.isComposing || isComposing.value) {
     return;

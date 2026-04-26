@@ -2,6 +2,7 @@ import path from "path";
 import prisma from "../prisma";
 import { splitTextIntoChunks } from "./chunk";
 import { embedText, getEmbeddingModelName } from "./embed";
+import { resolveKnowledgeDocumentPath } from "./paths";
 import { parsePdfDocument } from "./pdf";
 
 interface IndexedChunkPayload {
@@ -21,7 +22,7 @@ export const indexKnowledgeDocument = async (documentId: number) => {
     throw new Error("文档不存在");
   }
 
-  const absoluteFilePath = path.resolve(process.cwd(), document.filePath);
+  const absoluteFilePath = resolveKnowledgeDocumentPath(document.filePath);
 
   await prisma.knowledgeDocument.update({
     where: { id: documentId },

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import fs from "fs/promises";
 import prisma from "../lib/prisma";
+import { resolveKnowledgeDocumentPath } from "../lib/knowledge/paths";
 import { indexKnowledgeDocument } from "../lib/knowledge/index-document";
 import { parseId } from "../lib/utils";
 
@@ -42,6 +44,20 @@ export const uploadDocument = async (req: Request, res: Response) => {
 
     void indexKnowledgeDocument(document.id).catch((error) => {
       console.error("知识库文档索引失败:", error);
+
+      const errorMessage = error instanceof Error ? error.message : "文档索引失败";
+
+      void prisma.knowledgeDocument
+        .update({
+          where: { id: document.id },
+          data: {
+            status: "failed",
+            errorMessage,
+          },
+        })
+        .catch((updateError) => {
+          console.error("知识库文档失败状态回写失败:", updateError);
+        });
     });
 
     res.status(201).json(document);
@@ -91,9 +107,21 @@ export const deleteDocument = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "文档不存在" });
     }
 
+    const storedFilePath = document.filePath;
+
     await prisma.knowledgeDocument.delete({
       where: { id },
     });
+
+    if (storedFilePath) {
+      const absoluteFilePath = resolveKnowledgeDocumentPath(storedFilePath);
+
+      try {
+        await fs.unlink(absoluteFilePath);
+      } catch (unlinkError) {
+        console.error("删除知识库文档文件失败:", unlinkError);
+      }
+    }
 
     res.json({ message: "删除成功" });
   } catch (error) {

@@ -3,6 +3,7 @@ const SILICONFLOW_EMBEDDING_URL =
   "https://api.siliconflow.cn/v1/embeddings";
 const SILICONFLOW_EMBEDDING_MODEL =
   process.env.SILICONFLOW_EMBEDDING_MODEL || "BAAI/bge-m3";
+const EMBEDDING_TIMEOUT_MS = 8000;
 
 interface EmbeddingApiResponse {
   data?: Array<{
@@ -15,6 +16,11 @@ const EMBEDDING_OVERLAP_CHARS = 60;
 
 const splitForEmbedding = (text: string) => {
   const normalized = text.trim();
+
+  if (normalized === "") {
+    return [];
+  }
+
   if (normalized.length <= EMBEDDING_MAX_CHARS) {
     return [normalized];
   }
@@ -81,17 +87,39 @@ const averageEmbeddings = (vectors: number[][]) => {
 };
 
 const requestEmbedding = async (input: string): Promise<number[]> => {
-  const response = await fetch(SILICONFLOW_EMBEDDING_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.SILICONFLOW_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: SILICONFLOW_EMBEDDING_MODEL,
-      input,
-    }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort(`SiliconFlow embedding 请求超时（>${EMBEDDING_TIMEOUT_MS}ms）`);
+  }, EMBEDDING_TIMEOUT_MS);
+
+  let response: Response;
+
+  try {
+    response = await fetch(SILICONFLOW_EMBEDDING_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SILICONFLOW_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: SILICONFLOW_EMBEDDING_MODEL,
+        input,
+      }),
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(
+        typeof controller.signal.reason === "string"
+          ? controller.signal.reason
+          : "SiliconFlow embedding 请求超时"
+      );
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const message = await response.text();
