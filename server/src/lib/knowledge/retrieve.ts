@@ -1,6 +1,8 @@
 import prisma from "../prisma";
 import { embedText } from "./embed";
 
+const MIN_RETRIEVAL_SCORE = 0.35;
+
 export interface RetrievedChunk {
   chunkId: number;
   documentId: number;
@@ -42,7 +44,7 @@ export const retrieveRelevantChunks = async (
     limit
   );
 
-  return rows;
+  return rows.filter((row) => Number.isFinite(row.score) && row.score >= MIN_RETRIEVAL_SCORE);
 };
 
 export const formatRetrievedContext = (chunks: RetrievedChunk[]) => {
