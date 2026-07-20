@@ -47,42 +47,33 @@ print_success "日志目录创建完成"
 # 安装后端依赖
 print_info "安装后端依赖..."
 cd $SERVER_DIR
-npm install --production=false
+pnpm install
 print_success "后端依赖安装完成"
 
 # 构建后端
 print_info "构建后端..."
-npm run build
+pnpm run build
 print_success "后端构建完成"
-
-# 初始化数据库
-print_info "检查数据库..."
-if [ ! -f "$SERVER_DIR/prisma/data.db" ]; then
-    print_info "初始化数据库..."
-    npx prisma generate
-    npx prisma db push
-    print_success "数据库初始化完成"
-else
-    print_success "数据库已存在"
-fi
 
 # 创建 .env 文件（如果不存在）
 if [ ! -f "$SERVER_DIR/.env" ]; then
-    print_info "创建环境配置文件..."
-    cat > $SERVER_DIR/.env << 'EOF'
-NODE_ENV=production
-PORT=3000
-JWT_SECRET=please-change-this-to-a-random-string
-DATABASE_URL=file:./data.db
-EOF
-    print_info "请编辑 $SERVER_DIR/.env 修改 JWT_SECRET"
+    cp "$SERVER_DIR/.env.example" "$SERVER_DIR/.env"
+    print_info "已创建 $SERVER_DIR/.env，请填写数据库密码、JWT_SECRET 与 API Key 后重新运行本脚本"
+    exit 1
 fi
+
+# 初始化数据库
+print_info "生成 Prisma Client 并应用数据库迁移..."
+cd $SERVER_DIR
+pnpm run db:generate
+pnpm run db:migrate
+print_success "数据库迁移完成"
 
 # 安装前端依赖并构建
 print_info "构建前端..."
 cd $PROJECT_DIR
-npm install
-npm run build
+pnpm install
+pnpm run build
 print_success "前端构建完成"
 
 # 使用 PM2 启动/重启后端

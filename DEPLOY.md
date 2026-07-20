@@ -98,23 +98,20 @@ root@iZxxxxxx:~#
 apt update && apt upgrade -y
 ```
 
-### 3.2 安装 Node.js 20
+### 3.2 安装 Node.js 22 与 pnpm
 
 ```bash
-# 安装 Node.js 20
-curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt install -y nodejs
+npm install -g pnpm@10 pm2
 
-# 验证安装
 node -v
-npm -v
+pnpm -v
 ```
 
 ### 3.3 安装 PM2（进程管理）
 
-```bash
-npm install -g pm2
-```
+PM2 已在上一步随 pnpm 一起全局安装，可运行 `pm2 -v` 验证。
 
 ### 3.4 安装 Nginx（Web服务器）
 
@@ -132,14 +129,40 @@ systemctl enable nginx
 apt install -y git
 ```
 
-### 3.6 验证安装
+### 3.6 启动 PostgreSQL + pgvector
+
+推荐使用官方 pgvector Docker 镜像，避免 PostgreSQL 与扩展版本不匹配：
 
 ```bash
-# 检查各软件版本
-node -v      # 应显示 v20.x.x
-npm -v       # 应显示 10.x.x
-nginx -v     # 应显示 nginx version: nginx/1.x.x
-pm2 -v       # 应显示 5.x.x
+apt install -y docker.io
+systemctl enable --now docker
+
+docker volume create reddate-pg-data
+docker run -d \
+  --name reddate-pg \
+  --restart always \
+  -e POSTGRES_USER=reddate \
+  -e POSTGRES_PASSWORD=reddate \
+  -e POSTGRES_DB=reddate \
+  -p 127.0.0.1:5432:5432 \
+  -v reddate-pg-data:/var/lib/postgresql/data \
+  pgvector/pgvector:pg16
+
+docker exec reddate-pg \
+  psql -U reddate -d reddate \
+  -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+```
+
+**重要：** 把示例密码 `reddate` 改为强密码，并同步修改后续 `server/.env` 中的 `DATABASE_URL`。`127.0.0.1:5432:5432` 只允许本机连接，不要把数据库端口开放到公网。
+
+### 3.7 验证安装
+
+```bash
+node -v      # 应显示 v22.x
+pnpm -v      # 应显示 v10.x
+nginx -v
+pm2 -v
+docker ps --filter name=reddate-pg
 ```
 
 ---
@@ -189,47 +212,61 @@ rm admin.tar.gz
 
 ```bash
 cd /var/www/admin/server
-npm install
+pnpm install
 ```
 
 ### 5.2 构建后端
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ### 5.3 创建生产环境配置
 
 ```bash
-# 创建 .env 文件
+# 创建 .env 文件；请替换密码和 API Key
 cat > /var/www/admin/server/.env << 'EOF'
 NODE_ENV=production
 PORT=3000
-JWT_SECRET=your-super-secret-jwt-key-change-this-2024
-DATABASE_URL=file:./data.db
+JWT_SECRET=请替换为足够长的随机字符串
+DATABASE_URL=postgresql://reddate:reddate@127.0.0.1:5432/reddate
+
+# AI 助手（选填；不配置则 AI 对话不可用）
+DEEPSEEK_API_KEY=
+
+# 私有知识库 RAG（选填；不配置则 PDF 索引与检索不可用）
+SILICONFLOW_API_KEY=
+SILICONFLOW_EMBEDDING_MODEL=BAAI/bge-m3
+SILICONFLOW_EMBEDDING_URL=https://api.siliconflow.cn/v1/embeddings
 EOF
 ```
 
-**重要：** 请把 `your-super-secret-jwt-key-change-this-2024` 改成一个随机字符串！
+**重要：**
+- 修改示例中的 PostgreSQL 密码和 `JWT_SECRET`，不要提交 `.env`。
+- 确保 `DATABASE_URL` 指向已启用 `vector` 扩展的 PostgreSQL 数据库。
+- AI 对话需要 `DEEPSEEK_API_KEY`；知识库需要 `SILICONFLOW_API_KEY`。
 
 ### 5.4 初始化数据库
 
 ```bash
 cd /var/www/admin/server
-npx prisma generate
-npx prisma db push
+pnpm run db:generate    # 生成 Prisma Client
+pnpm run db:migrate     # 应用迁移（首次会创建基线 + 启用 vector 扩展）
+pnpm run db:seed        # 可选：写入 20 条示例合同（不会创建账号）
 ```
+
+> 基线迁移 `20260720000000_postgresql_baseline/migration.sql` 会在第一行执行 `CREATE EXTENSION IF NOT EXISTS vector;`，所以连进数据库的用户需要有 `superuser` 或 `CREATE EXTENSION` 权限。如果权限受限，先用超级用户手动执行：
+>
+> ```bash
+> sudo -u postgres psql -d reddate -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+> ```
 
 ### 5.5 使用 PM2 启动后端
 
 ```bash
 cd /var/www/admin/server
-pm2 start dist/index.js --name "red-date-api"
-
-# 保存 PM2 配置
+pm2 start ecosystem.config.js --env production
 pm2 save
-
-# 设置开机自启
 pm2 startup
 ```
 
@@ -249,12 +286,8 @@ pm2 status
 
 ```bash
 cd /var/www/admin
-
-# 安装依赖
-npm install
-
-# 构建
-npm run build
+pnpm install
+pnpm run build
 ```
 
 构建完成后，静态文件在 `dist` 目录中。
@@ -421,14 +454,28 @@ ls /var/www/admin/dist
 nginx -t
 pm2 logs red-date-api
 ```
+### Q: 数据库连接失败 / `type "vector" does not exist`
 
-### Q: 数据库连接失败
-
-检查数据库文件权限：
 ```bash
-ls -la /var/www/admin/server/*.db
-chmod 644 /var/www/admin/server/*.db
+docker exec reddate-pg pg_isready -U reddate
+docker exec reddate-pg psql -U reddate -d reddate -c '\conninfo'
+docker exec reddate-pg psql -U reddate -d reddate -c 'CREATE EXTENSION IF NOT EXISTS vector;'
+
+cd /var/www/admin/server
+pnpm run db:migrate
 ```
+
+### Q: 已有 PostgreSQL 数据库不是通过迁移创建的
+
+先做好数据库备份，再将基线标记为已应用，然后继续部署：
+
+```bash
+cd /var/www/admin/server
+pnpm exec prisma migrate resolve --applied 20260720000000_postgresql_baseline
+pnpm run db:migrate
+```
+
+新建数据库无需执行 `migrate resolve`。
 
 ### Q: 如何查看后端日志
 
@@ -451,13 +498,13 @@ systemctl restart nginx
 ```bash
 cd /var/www/admin
 git pull
+pnpm install
+pnpm run build
 
-# 重新构建前端
-npm run build
-
-# 重新构建后端
 cd server
-npm run build
+pnpm install
+pnpm run build
+pnpm run db:migrate
 pm2 restart red-date-api
 ```
 

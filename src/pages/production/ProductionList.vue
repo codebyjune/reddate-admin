@@ -72,10 +72,10 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <div v-if="row.rejectProducts && row.rejectProducts.length > 0">
+              <div v-if="row.substandardProducts && row.substandardProducts.length > 0">
                 <div class="mb-2 text-sm font-medium text-gray-600">等外品</div>
-                <el-table :data="row.rejectProducts" size="small" border>
-                  <el-table-column prop="rejectType" label="类型" width="80" />
+                <el-table :data="row.substandardProducts" size="small" border>
+                  <el-table-column prop="substandardType" label="类型" width="80" />
                   <el-table-column prop="sourceGrade" label="来源等级" width="80" />
                   <el-table-column prop="spec" label="规格(kg)" width="80" />
                   <el-table-column prop="quantity" label="数量(件)" width="80" />
@@ -85,7 +85,7 @@
                   <el-table-column prop="remark" label="备注" />
                   <el-table-column label="操作" width="80" align="center">
                     <template #default="{ row: r }">
-                      <el-button type="danger" size="small" link @click="handleDeleteReject(r)">删除</el-button>
+                      <el-button type="danger" size="small" link @click="handleDeleteSubstandard(r)">删除</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -110,7 +110,7 @@
         </el-table-column>
         <el-table-column label="等外品" width="100" align="center">
           <template #default="{ row }">
-            <el-tag v-if="row.rejectCount > 0" type="warning" size="small">{{ row.rejectCount }} 条</el-tag>
+            <el-tag v-if="row.substandardCount > 0" type="warning" size="small">{{ row.substandardCount }} 条</el-tag>
             <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
@@ -161,12 +161,12 @@ interface ProductionRecord {
   updatedAt: string;
 }
 
-interface RejectRecord {
+interface SubstandardRecord {
   id: number;
   date: string;
   shift: string;
   batchNo: string;
-  rejectType: string;
+  substandardType: string;
   sourceGrade: string;
   spec: number;
   quantity: number;
@@ -179,11 +179,11 @@ interface BatchRecord {
   shift: string;
   batchNo: string;
   normalCount: number;
-  rejectCount: number;
+  substandardCount: number;
   totalQuantity: number;
   totalWeight: number;
   normalProducts: ProductionRecord[];
-  rejectProducts: RejectRecord[];
+  substandardProducts: SubstandardRecord[];
 }
 
 const router = useRouter();
@@ -193,7 +193,7 @@ const expandedRowKeys = ref<string[]>([]);
 
 // 所有记录（用于展开详情）
 const allNormalRecords = ref<ProductionRecord[]>([]);
-const allRejectRecords = ref<RejectRecord[]>([]);
+const allSubstandardRecords = ref<SubstandardRecord[]>([]);
 
 const searchForm = reactive({
   dateRange: [] as string[],
@@ -228,7 +228,7 @@ const handleBatchExpand = (row: BatchRecord) => {
   row.normalProducts = allNormalRecords.value.filter(
     (r) => r.date === row.date && r.batchNo === row.batchNo && r.shift === row.shift
   );
-  row.rejectProducts = allRejectRecords.value.filter(
+  row.substandardProducts = allSubstandardRecords.value.filter(
     (r) => r.date === row.date && r.batchNo === row.batchNo && r.shift === row.shift
   );
 };
@@ -251,26 +251,24 @@ const resetSearch = () => {
 const fetchRecords = async () => {
   loading.value = true;
   try {
-    const [normalRes, rejectRes] = await Promise.all([
+    const [normalRes, substandardRes] = await Promise.all([
       request.get("/production"),
       request.get("/substandards"),
     ]);
 
     let allNormal: ProductionRecord[] = Array.isArray(normalRes) ? normalRes : [];
-    let allReject: RejectRecord[] = Array.isArray(rejectRes) ? rejectRes : [];
+    let allSubstandard: SubstandardRecord[] = Array.isArray(substandardRes) ? substandardRes : [];
 
-    // 缓存所有记录
     allNormalRecords.value = allNormal;
-    allRejectRecords.value = allReject;
+    allSubstandardRecords.value = allSubstandard;
 
-    // 筛选
     if (searchForm.shift) {
       allNormal = allNormal.filter((r) => r.shift === searchForm.shift);
-      allReject = allReject.filter((r) => r.shift === searchForm.shift);
+      allSubstandard = allSubstandard.filter((r) => r.shift === searchForm.shift);
     }
     if (searchForm.batchNo) {
       allNormal = allNormal.filter((r) => r.batchNo.includes(searchForm.batchNo));
-      allReject = allReject.filter((r) => r.batchNo.includes(searchForm.batchNo));
+      allSubstandard = allSubstandard.filter((r) => r.batchNo.includes(searchForm.batchNo));
     }
     if (searchForm.dateRange && searchForm.dateRange.length === 2) {
       const start = searchForm.dateRange[0];
@@ -289,7 +287,7 @@ const fetchRecords = async () => {
           const normalized = normalizeDate(r.date);
           return normalized >= start && normalized <= end;
         });
-        allReject = allReject.filter((r) => {
+        allSubstandard = allSubstandard.filter((r) => {
           const normalized = normalizeDate(r.date);
           return normalized >= start && normalized <= end;
         });
@@ -307,11 +305,11 @@ const fetchRecords = async () => {
           shift: r.shift,
           batchNo: r.batchNo,
           normalCount: 0,
-          rejectCount: 0,
+          substandardCount: 0,
           totalQuantity: 0,
           totalWeight: 0,
           normalProducts: [],
-          rejectProducts: [],
+          substandardProducts: [],
         });
       }
       const batch = batchMap.get(key)!;
@@ -320,7 +318,7 @@ const fetchRecords = async () => {
       batch.totalWeight += r.weight || 0;
     });
 
-    allReject.forEach((r) => {
+    allSubstandard.forEach((r) => {
       const key = `${r.date}-${r.batchNo}-${r.shift}`;
       if (!batchMap.has(key)) {
         batchMap.set(key, {
@@ -328,15 +326,15 @@ const fetchRecords = async () => {
           shift: r.shift,
           batchNo: r.batchNo,
           normalCount: 0,
-          rejectCount: 0,
+          substandardCount: 0,
           totalQuantity: 0,
           totalWeight: 0,
           normalProducts: [],
-          rejectProducts: [],
+          substandardProducts: [],
         });
       }
       const batch = batchMap.get(key)!;
-      batch.rejectCount++;
+      batch.substandardCount++;
       batch.totalQuantity += r.quantity || 0;
       batch.totalWeight += r.weight || 0;
     });
@@ -379,7 +377,7 @@ const handleDeleteNormal = async (record: ProductionRecord) => {
 };
 
 // 删除等外品
-const handleDeleteReject = async (record: RejectRecord) => {
+const handleDeleteSubstandard = async (record: SubstandardRecord) => {
   try {
     await ElMessageBox.confirm(
       `确定要删除该等外品记录吗？`,

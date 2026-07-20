@@ -1,9 +1,13 @@
+const path = require("node:path");
+
+const logsDir = path.join(__dirname, "logs");
+
 module.exports = {
   apps: [
     {
       name: "red-date-api",
       script: "./dist/index.js",
-      cwd: "/var/www/admin/server",
+      cwd: __dirname,
       instances: 1,
       autorestart: true,
       watch: false,
@@ -12,9 +16,9 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 3000,
       },
-      error_file: "/var/www/admin/server/logs/error.log",
-      out_file: "/var/www/admin/server/logs/out.log",
-      log_file: "/var/www/admin/server/logs/combined.log",
+      error_file: path.join(logsDir, "error.log"),
+      out_file: path.join(logsDir, "out.log"),
+      log_file: path.join(logsDir, "combined.log"),
       time: true,
     },
   ],

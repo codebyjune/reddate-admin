@@ -417,7 +417,7 @@ interface SalesInfo {
   customerName: string;
   customerPhone: string;
   customerAddress: string;
-  productCategory: string; // normal: 等级内, reject: 等外品
+  productCategory: string; // normal: 等级内, substandard: 等外品
   productLevel: string;
   spec: string;
   quantity: number;
