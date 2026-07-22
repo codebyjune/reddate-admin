@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useLayoutStore } from "@/stores/layout";
 import { useAuthStore } from "@/stores/auth";
 
+const { t } = useI18n();
 const layoutStore = useLayoutStore();
 const authStore = useAuthStore();
 
 const isAdmin = computed(() => authStore.isAdmin);
+const menuCollapse = computed(() =>
+  layoutStore.isMobile ? false : layoutStore.isCollapse,
+);
 </script>
 
 <template>
@@ -16,53 +21,53 @@ const isAdmin = computed(() => authStore.isAdmin);
     class="h-full"
     default-active="/inventory"
     text-color="#fff"
-    :collapse="layoutStore.isCollapse"
+    :collapse="menuCollapse"
     router
   >
     <el-menu-item index="/inventory">
       <el-icon><DataLine /></el-icon>
-      <span>库存概览</span>
+      <span>{{ t("nav.inventory") }}</span>
     </el-menu-item>
     <el-sub-menu index="production">
       <template #title>
         <el-icon><Edit /></el-icon>
-        <span>生产管理</span>
+        <span>{{ t("nav.production") }}</span>
       </template>
-      <el-menu-item index="/production">生产录入</el-menu-item>
-      <el-menu-item index="/production-list">生产记录</el-menu-item>
+      <el-menu-item index="/production">{{ t("nav.productionEntry") }}</el-menu-item>
+      <el-menu-item index="/production-list">{{ t("nav.productionList") }}</el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="purchase">
       <template #title>
         <el-icon><ShoppingCart /></el-icon>
-        <span>采购管理</span>
+        <span>{{ t("nav.purchase") }}</span>
       </template>
-      <el-menu-item index="/contract">合同录入</el-menu-item>
-      <el-menu-item index="/contract-list">合同列表</el-menu-item>
-      <el-menu-item index="/inbound/create">入库录入</el-menu-item>
-      <el-menu-item index="/inbound">入库记录</el-menu-item>
+      <el-menu-item index="/contract">{{ t("nav.contractEntry") }}</el-menu-item>
+      <el-menu-item index="/contract-list">{{ t("nav.contractList") }}</el-menu-item>
+      <el-menu-item index="/inbound/create">{{ t("nav.inboundEntry") }}</el-menu-item>
+      <el-menu-item index="/inbound">{{ t("nav.inboundList") }}</el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="sales">
       <template #title>
         <el-icon><Sell /></el-icon>
-        <span>销售管理</span>
+        <span>{{ t("nav.sales") }}</span>
       </template>
-      <el-menu-item index="/sales">销售录入</el-menu-item>
-      <el-menu-item index="/sales-list">销售列表</el-menu-item>
+      <el-menu-item index="/sales">{{ t("nav.salesEntry") }}</el-menu-item>
+      <el-menu-item index="/sales-list">{{ t("nav.salesList") }}</el-menu-item>
     </el-sub-menu>
     <el-menu-item index="/ai-dialog">
       <el-icon><ChatDotRound /></el-icon>
-      <span>AI 助手</span>
+      <span>{{ t("nav.ai") }}</span>
     </el-menu-item>
     <el-menu-item index="/knowledge-documents">
       <el-icon><Document /></el-icon>
-      <span>我的文档</span>
+      <span>{{ t("nav.documents") }}</span>
     </el-menu-item>
     <el-sub-menu index="system" v-if="isAdmin">
       <template #title>
         <el-icon><Setting /></el-icon>
-        <span>系统管理</span>
+        <span>{{ t("nav.system") }}</span>
       </template>
-      <el-menu-item index="/user-management">用户管理</el-menu-item>
+      <el-menu-item index="/user-management">{{ t("nav.userManagement") }}</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

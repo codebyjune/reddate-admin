@@ -2,93 +2,93 @@
   <div class="p-2">
     <el-card shadow="never">
       <template #header>
-        <div class="flex justify-between items-center">
+        <div class="flex flex-wrap justify-between items-center gap-2">
           <div class="flex flex-col gap-1">
-            <h2 class="text-lg font-semibold text-gray-800">合同列表</h2>
-            <p class="text-sm text-gray-400">查看已上传的红枣收购合同</p>
+            <h2 class="text-lg font-semibold text-gray-800">{{ t("contract.listTitle") }}</h2>
+            <p class="text-sm text-gray-400">{{ t("contract.listDesc") }}</p>
           </div>
           <el-button type="primary" @click="goToCreate">
             <el-icon><Plus /></el-icon>
-            新增合同
+            {{ t("contract.add") }}
           </el-button>
         </div>
       </template>
 
       <!-- 搜索筛选 -->
       <el-form :inline="true" class="mb-4">
-        <el-form-item label="合同编号">
+        <el-form-item :label="t('contract.contractNo')">
           <el-input
             v-model="searchForm.contractNo"
-            placeholder="请输入合同编号"
+            :placeholder="t('contract.enterContractNoSearch')"
             clearable
             style="width: 200px"
           />
         </el-form-item>
-        <el-form-item label="乙方名称">
+        <el-form-item :label="t('contract.partyBName')">
           <el-input
             v-model="searchForm.partyBName"
-            placeholder="请输入乙方名称"
+            :placeholder="t('contract.enterPartyBNameSearch')"
             clearable
             style="width: 200px"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="fetchContracts">搜索</el-button>
-          <el-button @click="resetSearch">重置</el-button>
+          <el-button type="primary" @click="fetchContracts">{{ t("common.search") }}</el-button>
+          <el-button @click="resetSearch">{{ t("common.reset") }}</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 合同列表表格 -->
       <el-table :data="contracts" stripe v-loading="loading">
-        <el-table-column prop="contractNo" label="合同编号" width="150" />
-        <el-table-column prop="signDate" label="签订日期" width="120" />
-        <el-table-column prop="partyBName" label="乙方名称" width="120" />
-        <el-table-column prop="partyBPhone" label="联系电话" width="130" />
-        <el-table-column prop="plantingArea" label="种植面积(亩)" width="110">
+        <el-table-column prop="contractNo" :label="t('contract.contractNo')" width="150" />
+        <el-table-column prop="signDate" :label="t('contract.signDate')" width="120" />
+        <el-table-column prop="partyBName" :label="t('contract.partyBName')" width="120" />
+        <el-table-column prop="partyBPhone" :label="t('contract.phone')" width="130" />
+        <el-table-column prop="plantingArea" :label="t('contract.plantingArea')" width="110">
           <template #default="{ row }">
             {{ row.plantingArea?.toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
           prop="purchaseQuantity"
-          label="购买数量(吨)"
+          :label="t('contract.purchaseQty')"
           width="120"
         >
           <template #default="{ row }">
             {{ row.purchaseQuantity?.toFixed(2) }}
           </template>
         </el-table-column>
-        <el-table-column prop="unitPrice" label="收购单价(元/kg)" width="130">
+        <el-table-column prop="unitPrice" :label="t('contract.unitPrice')" width="130">
           <template #default="{ row }">
             {{ row.unitPrice?.toFixed(2) }}
           </template>
         </el-table-column>
-        <el-table-column prop="deposit" label="预付定金(元)" width="120">
+        <el-table-column prop="deposit" :label="t('contract.deposit')" width="120">
           <template #default="{ row }">
             {{ row.deposit?.toFixed(2) }}
           </template>
         </el-table-column>
         <el-table-column
           prop="purchaseManager"
-          label="采购负责人"
+          :label="t('contract.purchaseManager')"
           width="110"
         />
-        <el-table-column label="操作" fixed="right" width="180">
+        <el-table-column :label="t('common.action')" fixed="right" width="180">
           <template #default="{ row }">
             <el-button type="primary" link @click="viewDetail(row)">
               <el-icon><View /></el-icon>
-              查看
+              {{ t("common.view") }}
             </el-button>
             <el-button type="danger" link @click="handleDelete(row)">
               <el-icon><Delete /></el-icon>
-              删除
+              {{ t("common.delete") }}
             </el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
-      <div class="flex justify-end mt-4">
+      <div class="flex flex-wrap justify-end mt-4">
         <el-pagination
           v-model:current-page="pagination.page"
           v-model:page-size="pagination.pageSize"
@@ -102,52 +102,52 @@
     </el-card>
 
     <!-- 详情弹窗 -->
-    <el-dialog v-model="detailVisible" title="合同详情" width="700px">
+    <el-dialog v-model="detailVisible" :title="t('contract.detailTitle')" :width="'90%'" style="max-width: 700px">
       <el-descriptions :column="2" border v-if="currentContract">
-        <el-descriptions-item label="合同编号">
+        <el-descriptions-item :label="t('contract.contractNo')">
           {{ currentContract.contractNo }}
         </el-descriptions-item>
-        <el-descriptions-item label="签订日期">
+        <el-descriptions-item :label="t('contract.signDate')">
           {{ currentContract.signDate }}
         </el-descriptions-item>
-        <el-descriptions-item label="乙方名称">
+        <el-descriptions-item :label="t('contract.partyBName')">
           {{ currentContract.partyBName }}
         </el-descriptions-item>
-        <el-descriptions-item label="身份证号">
+        <el-descriptions-item :label="t('contract.idCard')">
           {{ currentContract.partyBIdCard }}
         </el-descriptions-item>
-        <el-descriptions-item label="联系电话">
+        <el-descriptions-item :label="t('contract.phone')">
           {{ currentContract.partyBPhone }}
         </el-descriptions-item>
-        <el-descriptions-item label="银行卡号">
+        <el-descriptions-item :label="t('contract.bankCard')">
           {{ currentContract.partyBBankCard || "-" }}
         </el-descriptions-item>
-        <el-descriptions-item label="种植面积">
+        <el-descriptions-item :label="t('contract.plantingArea')">
           {{ currentContract.plantingArea?.toFixed(2) }} 亩
         </el-descriptions-item>
-        <el-descriptions-item label="购买数量">
+        <el-descriptions-item :label="t('contract.purchaseQty')">
           {{ currentContract.purchaseQuantity?.toFixed(2) }} 吨
         </el-descriptions-item>
-        <el-descriptions-item label="收购单价">
+        <el-descriptions-item :label="t('contract.unitPrice')">
           {{ currentContract.unitPrice?.toFixed(2) }} 元/公斤
         </el-descriptions-item>
-        <el-descriptions-item label="预付定金">
+        <el-descriptions-item :label="t('contract.deposit')">
           {{ currentContract.deposit?.toFixed(2) }} 元
         </el-descriptions-item>
-        <el-descriptions-item label="纸箱数量">
+        <el-descriptions-item :label="t('contract.boxQty')">
           {{ currentContract.boxQuantity }} 个
         </el-descriptions-item>
-        <el-descriptions-item label="采购负责人">
+        <el-descriptions-item :label="t('contract.purchaseManager')">
           {{ currentContract.purchaseManager || "-" }}
         </el-descriptions-item>
-        <el-descriptions-item label="创建时间">
+        <el-descriptions-item :label="t('contract.createdAt')">
           {{ formatDate(currentContract.createdAt) }}
         </el-descriptions-item>
-        <el-descriptions-item label="更新时间">
+        <el-descriptions-item :label="t('contract.updatedAt')">
           {{ formatDate(currentContract.updatedAt) }}
         </el-descriptions-item>
         <el-descriptions-item
-          label="合同图片"
+          :label="t('contract.contractImage')"
           :span="2"
           v-if="currentContract.contractImage"
         >
@@ -160,7 +160,7 @@
         </el-descriptions-item>
       </el-descriptions>
       <template #footer>
-        <el-button @click="detailVisible = false">关闭</el-button>
+        <el-button @click="detailVisible = false">{{ t("common.close") }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -169,6 +169,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { Plus, View, Delete } from "@element-plus/icons-vue";
 import request from "@/utils/request";
 
@@ -192,6 +193,7 @@ interface Contract {
 }
 
 const router = useRouter();
+const { t } = useI18n();
 const contracts = ref<Contract[]>([]);
 const loading = ref(false);
 const detailVisible = ref(false);
@@ -248,7 +250,7 @@ const fetchContracts = async () => {
     contracts.value = data.slice(start, start + pagination.pageSize);
   } catch (error: any) {
     console.error("获取合同列表失败:", error);
-    ElMessage.error(error.message || "获取合同列表失败");
+    ElMessage.error(error.message || t("contract.fetchFailed"));
   } finally {
     loading.value = false;
   }
@@ -277,22 +279,22 @@ const viewDetail = (contract: Contract) => {
 const handleDelete = async (contract: Contract) => {
   try {
     await ElMessageBox.confirm(
-      `确定要删除合同 ${contract.contractNo} 吗？`,
-      "提示",
+      t("contract.deleteConfirm", [contract.contractNo]),
+      t("header.prompt"),
       {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+        confirmButtonText: t("common.confirm"),
+        cancelButtonText: t("common.cancel"),
         type: "warning",
       },
     );
 
     await request.delete(`/contracts/${contract.id}`);
-    ElMessage.success("删除成功");
+    ElMessage.success(t("contract.deleteSuccess"));
     fetchContracts();
   } catch (error: any) {
     if (error !== "cancel") {
       console.error("删除失败:", error);
-      ElMessage.error(error.message || "删除失败");
+      ElMessage.error(error.message || t("contract.deleteFailed"));
     }
   }
 };

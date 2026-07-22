@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <el-card class="w-96">
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <el-card class="w-full max-w-sm">
       <template #header>
         <div class="text-center">
-          <h1 class="text-xl font-semibold text-gray-800">红枣收购管理系统</h1>
-          <p class="text-sm text-gray-500 mt-1">用户注册</p>
+          <h1 class="text-xl font-semibold text-gray-800">{{ t("app.fullName") }}</h1>
+          <p class="text-sm text-gray-500 mt-1">{{ t("auth.userRegister") }}</p>
         </div>
       </template>
 
@@ -12,7 +12,7 @@
         <el-form-item prop="username">
           <el-input
             v-model="formData.username"
-            placeholder="用户名"
+            :placeholder="t('auth.username')"
             prefix-icon="User"
             size="large"
           />
@@ -21,7 +21,7 @@
           <el-input
             v-model="formData.password"
             type="password"
-            placeholder="密码"
+            :placeholder="t('auth.password')"
             prefix-icon="Lock"
             size="large"
             show-password
@@ -31,7 +31,7 @@
           <el-input
             v-model="formData.confirmPassword"
             type="password"
-            placeholder="确认密码"
+            :placeholder="t('auth.confirmPassword')"
             prefix-icon="Lock"
             size="large"
             show-password
@@ -40,7 +40,7 @@
         <el-form-item prop="name">
           <el-input
             v-model="formData.name"
-            placeholder="姓名（选填）"
+            :placeholder="t('auth.name')"
             prefix-icon="UserFilled"
             size="large"
           />
@@ -48,7 +48,7 @@
         <el-form-item prop="phone">
           <el-input
             v-model="formData.phone"
-            placeholder="手机号（选填）"
+            :placeholder="t('auth.phone')"
             prefix-icon="Phone"
             size="large"
           />
@@ -61,15 +61,15 @@
             :loading="loading"
             @click="handleRegister"
           >
-            注册
+            {{ t("auth.register") }}
           </el-button>
         </el-form-item>
       </el-form>
 
       <div class="text-center text-sm text-gray-500">
-        已有账号？
+        {{ t("auth.hasAccount") }}
         <router-link to="/login" class="text-blue-500 hover:underline">
-          立即登录
+          {{ t("auth.loginNow") }}
         </router-link>
       </div>
     </el-card>
@@ -81,7 +81,9 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
 import { useAuthStore } from "@/stores/auth";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 const formRef = ref<FormInstance>();
@@ -97,7 +99,7 @@ const formData = reactive({
 
 const validateConfirmPassword = (_rule: any, value: string, callback: any) => {
   if (value !== formData.password) {
-    callback(new Error("两次输入的密码不一致"));
+    callback(new Error(t("auth.passwordMismatch")));
   } else {
     callback();
   }
@@ -105,15 +107,15 @@ const validateConfirmPassword = (_rule: any, value: string, callback: any) => {
 
 const rules = reactive<FormRules>({
   username: [
-    { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 3, max: 20, message: "用户名长度应在3-20位之间", trigger: "blur" },
+    { required: true, message: t("auth.enterUsername"), trigger: "blur" },
+    { min: 3, max: 20, message: t("auth.usernameLen"), trigger: "blur" },
   ],
   password: [
-    { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 6, message: "密码长度至少6位", trigger: "blur" },
+    { required: true, message: t("auth.enterPassword"), trigger: "blur" },
+    { min: 6, message: t("auth.passwordLen"), trigger: "blur" },
   ],
   confirmPassword: [
-    { required: true, message: "请确认密码", trigger: "blur" },
+    { required: true, message: t("auth.enterConfirmPassword"), trigger: "blur" },
     { validator: validateConfirmPassword, trigger: "blur" },
   ],
 });
@@ -130,10 +132,10 @@ const handleRegister = async () => {
         name: formData.name || undefined,
         phone: formData.phone || undefined,
       });
-      ElMessage.success("注册成功");
+      ElMessage.success(t("auth.registerSuccess"));
       router.push("/");
     } catch (error: any) {
-      ElMessage.error(error.message || "注册失败");
+      ElMessage.error(error.message || t("auth.registerFailed"));
     } finally {
       loading.value = false;
     }

@@ -3,69 +3,69 @@
     <el-card shadow="never">
       <template #header>
         <div class="flex flex-col gap-1">
-          <h2 class="text-lg font-semibold text-gray-800">{{ isEdit ? '编辑入库记录' : '原料入库' }}</h2>
-          <p class="text-sm text-gray-400">{{ isEdit ? '修改入库记录信息' : '用于记录卡车运输入库的详细信息和产品明细' }}</p>
+          <h2 class="text-lg font-semibold text-gray-800">{{ isEdit ? t('inbound.editTitle') : t('inbound.createTitle') }}</h2>
+          <p class="text-sm text-gray-400">{{ isEdit ? t('inbound.editDesc') : t('inbound.createDesc') }}</p>
         </div>
       </template>
 
       <el-form :model="formData" label-width="100px" :rules="rules" ref="formRef">
         <div class="mb-4">
-          <h3 class="text-base font-medium text-gray-700 mb-3 border-l-4 border-blue-500 pl-2">基础信息</h3>
+          <h3 class="text-base font-medium text-gray-700 mb-3 border-l-4 border-blue-500 pl-2">{{ t("inbound.basicInfo") }}</h3>
           <el-row :gutter="20" class="mb-1">
-            <el-col :span="8">
-              <el-form-item label="发货日期" prop="deliveryDate">
-                <el-date-picker v-model="formData.deliveryDate" type="date" placeholder="选择发货日期" value-format="YYYY-MM-DD" style="width: 100%" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.deliveryDate')" prop="deliveryDate">
+                <el-date-picker v-model="formData.deliveryDate" type="date" :placeholder="t('inbound.selectDate')" value-format="YYYY-MM-DD" style="width: 100%" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="编号" prop="deliveryNo">
-                <el-input v-model="formData.deliveryNo" placeholder="请输入编号" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.deliveryNo')" prop="deliveryNo">
+                <el-input v-model="formData.deliveryNo" :placeholder="t('inbound.enterNo')" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="车牌号" prop="licensePlate">
-                <el-input v-model="formData.licensePlate" placeholder="请输入车牌号" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20" class="mb-2">
-            <el-col :span="8">
-              <el-form-item label="司机" prop="driver">
-                <el-input v-model="formData.driver" placeholder="请输入司机姓名" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="司机电话" prop="driverPhone">
-                <el-input v-model="formData.driverPhone" placeholder="请输入司机电话" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="起始地" prop="origin">
-                <el-input v-model="formData.origin" placeholder="请输入起始地" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.licensePlate')" prop="licensePlate">
+                <el-input v-model="formData.licensePlate" :placeholder="t('inbound.enterPlate')" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20" class="mb-2">
-            <el-col :span="8">
-              <el-form-item label="发货人" prop="sender">
-                <el-input v-model="formData.sender" placeholder="请输入发货人" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.driver')" prop="driver">
+                <el-input v-model="formData.driver" :placeholder="t('inbound.enterDriver')" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="发货人电话" prop="senderPhone">
-                <el-input v-model="formData.senderPhone" placeholder="请输入发货人电话" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.driverPhone')" prop="driverPhone">
+                <el-input v-model="formData.driverPhone" :placeholder="t('inbound.driverPhone')" />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="目的地" prop="destination">
-                <el-input v-model="formData.destination" placeholder="请输入目的地" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.origin')" prop="origin">
+                <el-input v-model="formData.origin" :placeholder="t('inbound.enterOrigin')" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row :gutter="20" class="mb-2">
-            <el-col :span="8">
-              <el-form-item label="收货人" prop="receiver">
-                <el-input v-model="formData.receiver" placeholder="请输入收货人" />
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.sender')" prop="sender">
+                <el-input v-model="formData.sender" :placeholder="t('inbound.sender')" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.senderPhone')" prop="senderPhone">
+                <el-input v-model="formData.senderPhone" :placeholder="t('inbound.senderPhone')" />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.destination')" prop="destination">
+                <el-input v-model="formData.destination" :placeholder="t('inbound.enterDest')" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20" class="mb-2">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('inbound.receiver')" prop="receiver">
+                <el-input v-model="formData.receiver" :placeholder="t('inbound.receiver')" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -73,116 +73,116 @@
 
         <div class="mb-4">
           <div class="flex items-center justify-between mb-3">
-            <h3 class="text-base font-medium text-gray-700 border-l-4 border-blue-500 pl-2">产品明细</h3>
-            <el-button type="primary" @click="handleAddProduct">+ 添加</el-button>
+            <h3 class="text-base font-medium text-gray-700 border-l-4 border-blue-500 pl-2">{{ t("inbound.productDetail") }}</h3>
+            <el-button type="primary" @click="handleAddProduct">{{ t("inbound.addProduct") }}</el-button>
           </div>
           <el-table :data="productList" border stripe>
-            <el-table-column prop="contractName" label="合同名称" min-width="120" />
-            <el-table-column prop="quantity" label="数量(箱)" width="90" />
-            <el-table-column prop="netWeight" label="净重/箱(KG)" width="120" />
-            <el-table-column prop="yieldRate" label="出成率%" width="90" />
-            <el-table-column prop="lossRate" label="损耗率%" width="90" />
-            <el-table-column prop="moistureRate" label="含水率%" width="90" />
-            <el-table-column prop="unitPrice" label="单价" width="90" />
-            <el-table-column prop="remark" label="备注" min-width="100" />
-            <el-table-column label="操作" width="100">
+            <el-table-column prop="contractName" :label="t('inbound.contractName')" min-width="120" />
+            <el-table-column prop="quantity" :label="t('inbound.boxCount')" width="90" />
+            <el-table-column prop="netWeight" :label="t('inbound.netWeightBox')" width="120" />
+            <el-table-column prop="yieldRate" :label="t('inbound.yieldRate')" width="90" />
+            <el-table-column prop="lossRate" :label="t('inbound.lossRate')" width="90" />
+            <el-table-column prop="moistureRate" :label="t('inbound.moistureRate')" width="90" />
+            <el-table-column prop="unitPrice" :label="t('inbound.unitPrice')" width="90" />
+            <el-table-column prop="remark" :label="t('common.remark')" min-width="100" />
+            <el-table-column :label="t('common.action')" width="100">
               <template #default="{ $index }">
-                <el-button type="danger" size="small" link @click="handleDeleteProduct($index)">删除</el-button>
+                <el-button type="danger" size="small" link @click="handleDeleteProduct($index)">{{ t("common.delete") }}</el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
 
         <div class="mb-4">
-          <h3 class="text-base font-medium text-gray-700 mb-3 border-l-4 border-blue-500 pl-2">签字确认</h3>
+          <h3 class="text-base font-medium text-gray-700 mb-3 border-l-4 border-blue-500 pl-2">{{ t("inbound.signature") }}</h3>
           <el-row :gutter="40">
-            <el-col :span="12">
-              <el-form-item label="采购经理">
-                <el-input v-model="formData.purchaseManager" placeholder="请输入采购经理姓名" />
+            <el-col :xs="24" :sm="12">
+              <el-form-item :label="t('inbound.purchaseManager')">
+                <el-input v-model="formData.purchaseManager" :placeholder="t('inbound.purchaseManager')" />
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="发货人">
-                <el-input v-model="formData.confirmSender" placeholder="请输入发货人姓名" />
+            <el-col :xs="24" :sm="12">
+              <el-form-item :label="t('inbound.confirmSender')">
+                <el-input v-model="formData.confirmSender" :placeholder="t('inbound.confirmSender')" />
               </el-form-item>
             </el-col>
           </el-row>
         </div>
 
-        <el-row justify="center" class="mt-6">
-          <el-button type="primary" @click="handleSave">保存</el-button>
-          <el-button @click="handleCancel">取消</el-button>
-          <el-button @click="handlePrint">打印</el-button>
+        <el-row justify="center" class="mt-6 flex-wrap">
+          <el-button type="primary" @click="handleSave">{{ t("common.save") }}</el-button>
+          <el-button @click="handleCancel">{{ t("common.cancel") }}</el-button>
+          <el-button @click="handlePrint">{{ t("common.print") }}</el-button>
         </el-row>
       </el-form>
     </el-card>
 
-    <el-dialog v-model="dialogVisible" title="添加产品" width="600px">
+    <el-dialog v-model="dialogVisible" :title="t('inbound.addProductTitle')" :width="'90%'" style="max-width: 600px">
       <el-form :model="productForm" label-width="120px" :rules="productRules" ref="productFormRef">
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="合同名称" prop="contractName">
-              <el-input v-model="productForm.contractName" placeholder="请输入合同名称" />
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.contractName')" prop="contractName">
+              <el-input v-model="productForm.contractName" :placeholder="t('inbound.enterContractName')" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="数量(箱)" prop="quantity">
-              <el-input v-model.number="productForm.quantity" placeholder="请输入数量">
-                <template #append>箱</template>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.boxCount')" prop="quantity">
+              <el-input v-model.number="productForm.quantity" :placeholder="t('inbound.enterQuantity')">
+                <template #append>{{ t("inbound.boxUnit") }}</template>
               </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="净重/箱(KG)" prop="netWeight">
-              <el-input v-model.number="productForm.netWeight" placeholder="请输入净重">
-                <template #append>KG</template>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.netWeightBox')" prop="netWeight">
+              <el-input v-model.number="productForm.netWeight" :placeholder="t('inbound.enterNetWeight')">
+                <template #append>{{ t("inbound.kgUnit") }}</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="预计出成率" prop="yieldRate">
-              <el-input v-model.number="productForm.yieldRate" placeholder="请输入出成率">
-                <template #append>%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="预计损耗率" prop="lossRate">
-              <el-input v-model.number="productForm.lossRate" placeholder="请输入损耗率">
-                <template #append>%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="预计含水率" prop="moistureRate">
-              <el-input v-model.number="productForm.moistureRate" placeholder="请输入含水率">
-                <template #append>%</template>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.yieldRate')" prop="yieldRate">
+              <el-input v-model.number="productForm.yieldRate" :placeholder="t('inbound.enterYieldRate')">
+                <template #append>{{ t("inbound.percentUnit") }}</template>
               </el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="单价" prop="unitPrice">
-              <el-input v-model.number="productForm.unitPrice" placeholder="请输入单价">
-                <template #append>元</template>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.lossRate')" prop="lossRate">
+              <el-input v-model.number="productForm.lossRate" :placeholder="t('inbound.enterLossRate')">
+                <template #append>{{ t("inbound.percentUnit") }}</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model="productForm.remark" placeholder="请输入备注" />
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.moistureRate')" prop="moistureRate">
+              <el-input v-model.number="productForm.moistureRate" :placeholder="t('inbound.enterMoistureRate')">
+                <template #append>{{ t("inbound.percentUnit") }}</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('inbound.unitPrice')" prop="unitPrice">
+              <el-input v-model.number="productForm.unitPrice" :placeholder="t('inbound.enterUnitPrice')">
+                <template #append>{{ t("inbound.yuanUnit") }}</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12">
+            <el-form-item :label="t('common.remark')" prop="remark">
+              <el-input v-model="productForm.remark" :placeholder="t('common.remark')" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleConfirmProduct">确定</el-button>
+        <el-button @click="dialogVisible = false">{{ t("common.cancel") }}</el-button>
+        <el-button type="primary" @click="handleConfirmProduct">{{ t("common.confirm") }}</el-button>
       </template>
     </el-dialog>
   </div>
@@ -190,12 +190,14 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
 import request from "@/utils/request";
 
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 
 // 编辑模式检测
 const isEdit = computed(() => !!route.params.id);
@@ -260,32 +262,32 @@ const productForm = reactive<ProductItem>({
 });
 
 const rules = reactive<FormRules>({
-  deliveryDate: [{ required: true, message: "请选择发货日期", trigger: "change" }],
+  deliveryDate: [{ required: true, message: t("inbound.selectDate"), trigger: "change" }],
   deliveryNo: [
-    { required: true, message: "请输入编号", trigger: "blur" },
-    { min: 3, max: 20, message: "编号长度应在3-20位之间", trigger: "blur" },
+    { required: true, message: t("inbound.enterNo"), trigger: "blur" },
+    { min: 3, max: 20, message: t("inbound.noLen"), trigger: "blur" },
   ],
-  licensePlate: [{ required: true, message: "请输入车牌号", trigger: "blur" }],
-  driver: [{ required: true, message: "请输入司机姓名", trigger: "blur" }],
-  origin: [{ required: true, message: "请输入起始地", trigger: "blur" }],
-  destination: [{ required: true, message: "请输入目的地", trigger: "blur" }],
+  licensePlate: [{ required: true, message: t("inbound.enterPlate"), trigger: "blur" }],
+  driver: [{ required: true, message: t("inbound.enterDriver"), trigger: "blur" }],
+  origin: [{ required: true, message: t("inbound.enterOrigin"), trigger: "blur" }],
+  destination: [{ required: true, message: t("inbound.enterDest"), trigger: "blur" }],
 });
 
 const productRules = reactive<FormRules>({
-  contractName: [{ required: true, message: "请输入合同名称", trigger: "blur" }],
+  contractName: [{ required: true, message: t("inbound.enterContractName"), trigger: "blur" }],
   quantity: [
-    { required: true, message: "请输入数量", trigger: "blur" },
+    { required: true, message: t("inbound.enterQuantity"), trigger: "blur" },
     { type: "number", min: 1, message: "数量必须大于0", trigger: "blur" },
   ],
   netWeight: [
-    { required: true, message: "请输入净重", trigger: "blur" },
+    { required: true, message: t("inbound.enterNetWeight"), trigger: "blur" },
     { type: "number", min: 0.01, message: "净重必须大于0", trigger: "blur" },
   ],
   yieldRate: [{ type: "number", min: 0, max: 100, message: "出成率应在0-100之间", trigger: "blur" }],
   lossRate: [{ type: "number", min: 0, max: 100, message: "损耗率应在0-100之间", trigger: "blur" }],
   moistureRate: [{ type: "number", min: 0, max: 100, message: "含水率应在0-100之间", trigger: "blur" }],
   unitPrice: [
-    { required: true, message: "请输入单价", trigger: "blur" },
+    { required: true, message: t("inbound.enterUnitPrice"), trigger: "blur" },
     { type: "number", min: 0.01, message: "单价必须大于0", trigger: "blur" },
   ],
 });
@@ -315,14 +317,14 @@ const handleConfirmProduct = async () => {
     if (valid) {
       productList.value.push({ ...productForm });
       dialogVisible.value = false;
-      ElMessage.success("添加成功");
+      ElMessage.success(t("inbound.addSuccess"));
     }
   });
 };
 
 const handleSave = async () => {
   if (productList.value.length === 0) {
-    ElMessage.warning("请至少添加一个产品明细");
+    ElMessage.warning(t("inbound.atLeastOneProduct"));
     return;
   }
 
@@ -343,11 +345,11 @@ const handleSave = async () => {
         await request.post("/inbound", payload);
       }
 
-      ElMessage.success(isEdit.value ? "更新成功" : "保存成功");
+      ElMessage.success(isEdit.value ? t("inbound.updateSuccess") : t("inbound.saveSuccess"));
       router.push("/inbound");
     } catch (error: any) {
       console.error("保存失败:", error);
-      ElMessage.error(error.message || "保存失败");
+      ElMessage.error(error.message || t("inbound.saveFailed"));
     } finally {
       loading.value = false;
     }
@@ -384,7 +386,7 @@ const loadInboundData = async () => {
     productList.value = data.products || [];
   } catch (error) {
     console.error("加载数据失败:", error);
-    ElMessage.error("加载数据失败");
+    ElMessage.error(t("inbound.loadFailed"));
     router.push("/inbound");
   } finally {
     loading.value = false;
