@@ -5,10 +5,10 @@
     <!-- 左侧：菜单折叠按钮 -->
     <div
       class="flex items-center justify-center w-10 h-10 bg-white rounded-full hover:bg-amber-500 transition-colors duration-200 cursor-pointer"
-      @click="layoutStore.toggleCollapse"
+      @click="toggleMenu"
     >
       <el-icon class="text-lg">
-        <component :is="layoutStore.isCollapse ? ArrowRight : ArrowLeft" />
+        <component :is="menuIcon" />
       </el-icon>
     </div>
 
@@ -18,6 +18,26 @@
       <div class="text-gray-600 text-sm hidden md:flex items-center gap-2">
         <span>{{ currentDate }}</span>
       </div>
+
+      <!-- 语言切换 -->
+      <el-dropdown trigger="click" @command="handleLanguageChange">
+        <div
+          class="flex items-center gap-1 cursor-pointer hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors text-sm text-gray-600"
+        >
+          <el-icon><Promotion /></el-icon>
+          <span class="hidden sm:inline">{{ locale === "zh-CN" ? "中文" : "EN" }}</span>
+        </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item command="zh-CN" :disabled="locale === 'zh-CN'">
+              中文
+            </el-dropdown-item>
+            <el-dropdown-item command="en-US" :disabled="locale === 'en-US'">
+              English
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
 
       <!-- 用户下拉菜单 -->
       <el-dropdown trigger="click" @command="handleCommand">
@@ -29,7 +49,7 @@
           </el-avatar>
           <div class="hidden sm:block">
             <div class="text-sm font-medium text-gray-800">
-              {{ authStore.user?.name || authStore.user?.username || "用户" }}
+              {{ authStore.user?.name || authStore.user?.username || t("header.user") }}
             </div>
             <div class="text-xs text-gray-500">
               {{ roleText }}
@@ -43,11 +63,11 @@
           <el-dropdown-menu>
             <el-dropdown-item command="profile">
               <el-icon><User /></el-icon>
-              <span>个人信息</span>
+              <span>{{ t("header.profile") }}</span>
             </el-dropdown-item>
             <el-dropdown-item divided command="logout">
               <el-icon><SwitchButton /></el-icon>
-              <span>退出登录</span>
+              <span>{{ t("header.logout") }}</span>
             </el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -59,52 +79,64 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { ArrowLeft, ArrowRight } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
+import { ArrowLeft, ArrowRight, Expand, Promotion } from "@element-plus/icons-vue";
 import { useLayoutStore } from "@/stores/layout";
 import { useAuthStore } from "@/stores/auth";
 
+const { t, locale } = useI18n();
 const router = useRouter();
 const layoutStore = useLayoutStore();
 const authStore = useAuthStore();
 
-// 用户头像显示文字
+const toggleMenu = () => {
+  if (layoutStore.isMobile) {
+    layoutStore.toggleDrawer();
+  } else {
+    layoutStore.toggleCollapse();
+  }
+};
+
+const menuIcon = computed(() => {
+  if (layoutStore.isMobile) return Expand;
+  return layoutStore.isCollapse ? ArrowRight : ArrowLeft;
+});
+
 const userAvatar = computed(() => {
-  const name = authStore.user?.name || authStore.user?.username || "用";
+  const name = authStore.user?.name || authStore.user?.username || t("header.user");
   return name.charAt(0).toUpperCase();
 });
 
-// 角色显示文字
 const roleText = computed(() => {
   const role = authStore.user?.role;
-  if (role === "admin") return "管理员";
-  return "普通用户";
+  if (role === "admin") return t("header.admin");
+  return t("header.user");
 });
 
-// 当前日期
 const currentDate = computed(() => {
   const now = new Date();
-  const weekDays = [
-    "星期日",
-    "星期一",
-    "星期二",
-    "星期三",
-    "星期四",
-    "星期五",
-    "星期六",
-  ];
+  const weekDaysZh = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+  const weekDaysEn = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekDays = locale.value === "zh-CN" ? weekDaysZh : weekDaysEn;
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
   const day = now.getDate();
   const weekDay = weekDays[now.getDay()];
-  return `${year}年${month}月${day}日 ${weekDay}`;
+  return locale.value === "zh-CN"
+    ? `${year}年${month}月${day}日 ${weekDay}`
+    : `${year}/${month}/${day} ${weekDay}`;
 });
 
-// 处理下拉菜单命令
+const handleLanguageChange = (lang: string) => {
+  locale.value = lang;
+  localStorage.setItem("locale", lang);
+  window.location.reload();
+};
+
 const handleCommand = (command: string) => {
   switch (command) {
     case "profile":
-      // TODO: 跳转到个人信息页面
-      ElMessage.info("个人信息页面开发中");
+      ElMessage.info(t("header.profileWip"));
       break;
     case "logout":
       handleLogout();
@@ -112,20 +144,18 @@ const handleCommand = (command: string) => {
   }
 };
 
-// 退出登录
 const handleLogout = () => {
-  ElMessageBox.confirm("确定要退出登录吗？", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
+  ElMessageBox.confirm(t("header.logoutConfirm"), t("header.prompt"), {
+    confirmButtonText: t("common.confirm"),
+    cancelButtonText: t("common.cancel"),
     type: "warning",
   })
     .then(() => {
       authStore.logout();
-      ElMessage.success("已退出登录");
+      ElMessage.success(t("header.logoutSuccess"));
       router.push("/login");
     })
-    .catch(() => {
-      // 取消退出
-    });
+    .catch(() => {});
 };
 </script>
+

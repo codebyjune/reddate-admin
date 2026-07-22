@@ -4,7 +4,7 @@
     <el-row :gutter="20" class="mb-6">
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-blue-50">
-          <div class="text-gray-500 text-sm">入库批次</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.batches") }}</div>
           <div class="text-2xl font-bold text-blue-600">
             {{ materialStats.batches }}
           </div>
@@ -12,7 +12,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-green-50">
-          <div class="text-gray-500 text-sm">总箱数</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.totalBoxes") }}</div>
           <div class="text-2xl font-bold text-green-600">
             {{ materialStats.boxes }}
           </div>
@@ -20,7 +20,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-orange-50">
-          <div class="text-gray-500 text-sm">总净重(吨)</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.totalNetWeight") }}</div>
           <div class="text-2xl font-bold text-orange-600">
             {{ formatTon(materialStats.netWeight) }}
           </div>
@@ -28,7 +28,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-purple-50">
-          <div class="text-gray-500 text-sm">合同数量</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.contracts") }}</div>
           <div class="text-2xl font-bold text-purple-600">
             {{ materialStats.contracts }}
           </div>
@@ -40,17 +40,17 @@
     <el-card shadow="never">
       <template #header>
         <div class="flex items-center justify-between">
-          <span class="font-medium">入库趋势</span>
+          <span class="font-medium">{{ t("inventory.inboundTrend") }}</span>
           <!-- 天数切换，改变后重新请求数据 -->
           <el-radio-group
             v-model="trendDays"
             size="small"
             @change="fetchMaterialData"
           >
-            <el-radio-button :value="7">7天</el-radio-button>
-            <el-radio-button :value="15">15天</el-radio-button>
-            <el-radio-button :value="30">1个月</el-radio-button>
-            <el-radio-button :value="90">1季度</el-radio-button>
+            <el-radio-button :value="7">{{ t("inventory.days7") }}</el-radio-button>
+            <el-radio-button :value="15">{{ t("inventory.days15") }}</el-radio-button>
+            <el-radio-button :value="30">{{ t("inventory.month1") }}</el-radio-button>
+            <el-radio-button :value="90">{{ t("inventory.quarter") }}</el-radio-button>
           </el-radio-group>
         </div>
       </template>
@@ -61,6 +61,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { LineChart } from "echarts/charts";
@@ -72,6 +73,8 @@ import {
 import VChart from "vue-echarts";
 import request from "@/utils/request";
 import { generateTrend, formatTon } from "@/utils/format";
+
+const { t } = useI18n();
 
 use([
   CanvasRenderer,

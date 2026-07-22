@@ -3,30 +3,30 @@
     <!-- 筛选区域：按成品等级筛选生产记录 -->
     <el-card shadow="never" class="mb-4">
       <el-form :inline="true" :model="productFilter">
-        <el-form-item label="成品等级">
+        <el-form-item :label="t('inventory.productLevel')">
           <!-- 下拉选择等级，v-model 绑定筛选条件 -->
           <el-select
             v-model="productFilter.level"
-            placeholder="全部等级"
+            :placeholder="t('grade.allGrades')"
             clearable
             style="width: 150px"
           >
-            <el-option label="全部" value="" />
-            <el-option label="枣王" value="枣王" />
-            <el-option label="超特" value="超特" />
-            <el-option label="特级" value="特级" />
-            <el-option label="一级" value="一级" />
-            <el-option label="二级" value="二级" />
-            <el-option label="三级" value="三级" />
+            <el-option :label="t('common.all')" value="" />
+            <el-option :label="t('grade.KingGrade')" value="枣王" />
+            <el-option :label="t('grade.SuperPremium')" value="超特" />
+            <el-option :label="t('grade.PremiumGrade')" value="特级" />
+            <el-option :label="t('grade.Grade1')" value="一级" />
+            <el-option :label="t('grade.Grade2')" value="二级" />
+            <el-option :label="t('grade.Grade3')" value="三级" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <!-- 点击筛选按钮，重新请求数据 -->
           <el-button type="primary" @click="applyProductFilter"
-            >筛选</el-button
+            >{{ t("common.filter") }}</el-button
           >
           <!-- 点击重置按钮，清空条件并重新请求 -->
-          <el-button @click="resetProductFilter">重置</el-button>
+          <el-button @click="resetProductFilter">{{ t("common.reset") }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -35,7 +35,7 @@
     <el-row :gutter="20" class="mb-6">
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-blue-50">
-          <div class="text-gray-500 text-sm">生产批次</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.productionBatches") }}</div>
           <div class="text-2xl font-bold text-blue-600">
             {{ productStats.batches }}
           </div>
@@ -43,7 +43,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-green-50">
-          <div class="text-gray-500 text-sm">总箱数</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.productBoxes") }}</div>
           <div class="text-2xl font-bold text-green-600">
             {{ productStats.boxes }}
           </div>
@@ -51,7 +51,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-orange-50">
-          <div class="text-gray-500 text-sm">成品净重(吨)</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.outputWeight") }}</div>
           <div class="text-2xl font-bold text-orange-600">
             {{ formatTon(productStats.outputWeight) }}
           </div>
@@ -59,7 +59,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-cyan-50">
-          <div class="text-gray-500 text-sm">可销售库存(件)</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.availableStock") }}</div>
           <div class="text-2xl font-bold text-cyan-600">
             {{ availableStats.totalAvailable }}
           </div>
@@ -70,13 +70,13 @@
     <!-- 成品等级库存表格：展示每个等级的生产/销售/库存情况 -->
     <el-card shadow="never" class="mb-4">
       <template #header>
-        <span class="font-medium">成品等级分布</span>
+        <span class="font-medium">{{ t("inventory.productDistribution") }}</span>
       </template>
       <el-table :data="inventoryData" stripe>
         <!-- 等级列：用不同颜色的标签显示 -->
         <el-table-column
           prop="gradeName"
-          label="等级"
+          :label="t('common.grade')"
           width="100"
           align="center"
         >
@@ -89,14 +89,14 @@
         <!-- 生产件数列 -->
         <el-table-column
           prop="produced"
-          label="生产件数"
+          :label="t('inventory.produced')"
           width="120"
           align="center"
         />
         <!-- 已销售件数列：有销售量显示橙色，无销售显示灰色 -->
         <el-table-column
           prop="sold"
-          label="已销售件数"
+          :label="t('inventory.sold')"
           width="150"
           align="center"
         >
@@ -109,7 +109,7 @@
         <!-- 可销售库存件数列：有库存显示绿色标签，无库存显示灰色标签 -->
         <el-table-column
           prop="available"
-          label="可销售库存件数"
+          :label="t('inventory.available')"
           width="160"
           align="center"
         >
@@ -124,7 +124,7 @@
         <!-- 生产重量列：保留两位小数 -->
         <el-table-column
           prop="producedWeight"
-          label="生产重量(吨)"
+          :label="t('inventory.producedWeight')"
           width="140"
           align="right"
         >
@@ -135,7 +135,7 @@
         <!-- 已销售重量列：保留两位小数 -->
         <el-table-column
           prop="soldWeight"
-          label="已销售重量(吨)"
+          :label="t('inventory.soldWeight')"
           width="170"
           align="right"
         >
@@ -146,7 +146,7 @@
         <!-- 可销售重量列：青色高亮，保留两位小数 -->
         <el-table-column
           prop="availableWeight"
-          label="可销售重量(吨)"
+          :label="t('inventory.availableWeight')"
           width="170"
           align="right"
         >
@@ -164,7 +164,7 @@
       <el-col :xs="24" :lg="12">
         <el-card shadow="never">
           <template #header
-            ><span class="font-medium">成品等级分布</span></template
+            ><span class="font-medium">{{ t("inventory.productDistribution") }}</span></template
           >
           <v-chart :option="productPieOption" autoresize style="height: 300px" />
         </el-card>
@@ -172,7 +172,7 @@
       <el-col :xs="24" :lg="12">
         <el-card shadow="never">
           <template #header
-            ><span class="font-medium">近7日生产趋势</span></template
+            ><span class="font-medium">{{ t("inventory.productionTrend") }}</span></template
           >
           <v-chart
             :option="productLineOption"
@@ -187,6 +187,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 // ECharts 按需引入：渲染器、图表类型、组件
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
@@ -200,6 +201,8 @@ import {
 import VChart from "vue-echarts";
 import request from "@/utils/request";
 import { generateTrend, formatTon } from "@/utils/format";
+
+const { t } = useI18n();
 
 // 注册 ECharts 组件，缺了哪个对应图表功能就不生效
 use([

@@ -3,8 +3,8 @@
     <el-card shadow="never">
       <template #header>
         <div class="flex flex-col gap-1">
-          <h2 class="text-lg font-semibold text-gray-800">红枣收购合同</h2>
-          <p class="text-sm text-gray-400">录入收购合同信息</p>
+          <h2 class="text-lg font-semibold text-gray-800">{{ t("contract.title") }}</h2>
+          <p class="text-sm text-gray-400">{{ t("contract.desc") }}</p>
         </div>
       </template>
 
@@ -19,23 +19,23 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-blue-500 pl-2"
           >
-            合同基础信息
+            {{ t("contract.basicInfo") }}
           </h3>
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="合同编号" prop="contractNo">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.contractNo')" prop="contractNo">
                 <el-input
                   v-model="formData.contractNo"
-                  placeholder="请输入合同编号"
+                  :placeholder="t('contract.enterContractNo')"
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="签订日期" prop="signDate">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.signDate')" prop="signDate">
                 <el-date-picker
                   v-model="formData.signDate"
                   type="date"
-                  placeholder="选择签订日期"
+                  :placeholder="t('contract.selectDate')"
                   value-format="YYYY-MM-DD"
                   style="width: 100%"
                 />
@@ -49,39 +49,39 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-orange-500 pl-2"
           >
-            乙方（销售方）
+            {{ t("contract.partyB") }}
           </h3>
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="名称" prop="partyBName">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.partyBName')" prop="partyBName">
                 <el-input
                   v-model="formData.partyBName"
-                  placeholder="请输入乙方名称"
+                  :placeholder="t('contract.enterPartyBName')"
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="身份证号" prop="partyBIdCard">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.idCard')" prop="partyBIdCard">
                 <el-input
                   v-model="formData.partyBIdCard"
-                  placeholder="请输入身份证号"
+                  :placeholder="t('contract.enterIdCard')"
                   maxlength="18"
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="联系电话" prop="partyBPhone">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.phone')" prop="partyBPhone">
                 <el-input
                   v-model="formData.partyBPhone"
-                  placeholder="请输入联系电话"
+                  :placeholder="t('contract.enterPhone')"
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="银行卡号" prop="partyBBankCard">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.bankCard')" prop="partyBBankCard">
                 <el-input
                   v-model="formData.partyBBankCard"
-                  placeholder="请输入银行卡号"
+                  :placeholder="t('contract.enterBankCard')"
                   maxlength="19"
                 />
               </el-form-item>
@@ -94,24 +94,24 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-purple-500 pl-2"
           >
-            订购数量及面积
+            {{ t("contract.orderInfo") }}
           </h3>
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="种植面积" prop="plantingArea">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.plantingArea')" prop="plantingArea">
                 <el-input
                   v-model.number="formData.plantingArea"
-                  placeholder="请输入种植面积"
+                  :placeholder="t('contract.enterPlantingArea')"
                 >
                   <template #append>亩</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="购买数量" prop="purchaseQuantity">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.purchaseQty')" prop="purchaseQuantity">
                 <el-input
                   v-model.number="formData.purchaseQuantity"
-                  placeholder="请输入购买数量"
+                  :placeholder="t('contract.enterPurchaseQty')"
                 >
                   <template #append>吨</template>
                 </el-input>
@@ -125,24 +125,24 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-red-500 pl-2"
           >
-            收购价格
+            {{ t("contract.price") }}
           </h3>
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="收购单价" prop="unitPrice">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.unitPrice')" prop="unitPrice">
                 <el-input
                   v-model.number="formData.unitPrice"
-                  placeholder="请输入单价"
+                  :placeholder="t('contract.enterUnitPrice')"
                 >
                   <template #append>元/公斤</template>
                 </el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="预付定金" prop="deposit">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.deposit')" prop="deposit">
                 <el-input
                   v-model.number="formData.deposit"
-                  placeholder="请输入定金"
+                  :placeholder="t('contract.enterDeposit')"
                 >
                   <template #append>元</template>
                 </el-input>
@@ -156,14 +156,14 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-cyan-500 pl-2"
           >
-            派驻纸箱
+            {{ t("contract.boxInfo") }}
           </h3>
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="纸箱数量" prop="boxQuantity">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.boxQty')" prop="boxQuantity">
                 <el-input
                   v-model.number="formData.boxQuantity"
-                  placeholder="请输入纸箱数量"
+                  :placeholder="t('contract.enterBoxQty')"
                 >
                   <template #append>个</template>
                 </el-input>
@@ -177,14 +177,14 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-gray-500 pl-2"
           >
-            经办人信息
+            {{ t("contract.managerInfo") }}
           </h3>
           <el-row :gutter="20">
-            <el-col :span="8">
-              <el-form-item label="采购负责人" prop="purchaseManager">
+            <el-col :xs="24" :sm="12" :md="8">
+              <el-form-item :label="t('contract.purchaseManager')" prop="purchaseManager">
                 <el-input
                   v-model="formData.purchaseManager"
-                  placeholder="请输入采购负责人"
+                  :placeholder="t('contract.enterManager')"
                 />
               </el-form-item>
             </el-col>
@@ -196,11 +196,11 @@
           <h3
             class="text-base font-medium text-gray-700 mb-3 border-l-4 border-teal-500 pl-2"
           >
-            合同图片
+            {{ t("contract.imageInfo") }}
           </h3>
           <el-row :gutter="20">
             <el-col :span="24">
-              <el-form-item label="上传图片" prop="contractImage">
+              <el-form-item :label="t('contract.uploadImage')" prop="contractImage">
                 <el-upload
                   class="contract-uploader"
                   :action="uploadUrl"
@@ -220,16 +220,16 @@
                   </el-icon>
                 </el-upload>
                 <div class="text-gray-400 text-sm mt-2 ml-6">
-                  支持上传合同扫描件或照片，格式：JPG、PNG
+                  {{ t("contract.imageHint") }}
                 </div>
               </el-form-item>
             </el-col>
           </el-row>
         </div>
 
-        <el-row justify="center" class="mt-6">
-          <el-button type="primary" @click="handleSave">保存</el-button>
-          <el-button @click="handleCancel">重置</el-button>
+        <el-row justify="center" class="mt-6 flex-wrap">
+          <el-button type="primary" @click="handleSave">{{ t("common.save") }}</el-button>
+          <el-button @click="handleCancel">{{ t("common.reset") }}</el-button>
         </el-row>
       </el-form>
     </el-card>
@@ -238,6 +238,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import type { FormInstance, FormRules, UploadProps } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import request from "@/utils/request";
@@ -278,19 +279,21 @@ const uploadUrl = "/api/upload";
 
 const formRef = ref<FormInstance>();
 
+const { t } = useI18n();
+
 const rules = reactive<FormRules>({
-  contractNo: [{ required: true, message: "请输入合同编号", trigger: "blur" }],
-  signDate: [{ required: true, message: "请选择签订日期", trigger: "change" }],
-  partyBName: [{ required: true, message: "请输入乙方名称", trigger: "blur" }],
+  contractNo: [{ required: true, message: t("contract.enterContractNo"), trigger: "blur" }],
+  signDate: [{ required: true, message: t("contract.selectDate"), trigger: "change" }],
+  partyBName: [{ required: true, message: t("contract.enterPartyBName"), trigger: "blur" }],
   partyBIdCard: [
-    { required: true, message: "请输入身份证号", trigger: "blur" },
+    { required: true, message: t("contract.enterIdCard"), trigger: "blur" },
     {
       pattern: /^\d{17}[\dXx]$/,
-      message: "身份证号格式不正确",
+      message: t("contract.idCardFormat"),
       trigger: "blur",
     },
   ],
-  partyBPhone: [{ required: true, message: "请输入联系电话", trigger: "blur" }],
+  partyBPhone: [{ required: true, message: t("contract.enterPhone"), trigger: "blur" }],
   plantingArea: [
     {
       type: "number",
@@ -327,11 +330,11 @@ const handleSave = async () => {
     // 发送请求
     await request.post("/contracts", formData);
 
-    ElMessage.success("合同保存成功");
+    ElMessage.success(t("contract.saveSuccess"));
     formRef.value?.resetFields();
   } catch (error: any) {
     console.error("保存失败:", error);
-    ElMessage.error(error.message || "保存失败");
+    ElMessage.error(error.message || t("contract.saveFailed"));
   }
 };
 
@@ -352,11 +355,11 @@ const beforeUpload: UploadProps["beforeUpload"] = (rawFile) => {
   const isLt5M = rawFile.size / 1024 / 1024 < 5;
 
   if (!isImage) {
-    ElMessage.error("只能上传图片文件！");
+    ElMessage.error(t("contract.onlyImage"));
     return false;
   }
   if (!isLt5M) {
-    ElMessage.error("图片大小不能超过 5MB！");
+    ElMessage.error(t("contract.imageTooLarge"));
     return false;
   }
   return true;
@@ -365,7 +368,7 @@ const beforeUpload: UploadProps["beforeUpload"] = (rawFile) => {
 // 上传成功
 const handleUploadSuccess: UploadProps["onSuccess"] = (response) => {
   formData.contractImage = response.url;
-  ElMessage.success("图片上传成功");
+  ElMessage.success(t("contract.uploadSuccess"));
   
 };
 </script>

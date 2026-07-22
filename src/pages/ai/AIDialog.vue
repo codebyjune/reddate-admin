@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 h-[calc(100vh-120px)] flex flex-col">
+  <div class="p-2 sm:p-4 h-[calc(100vh-120px)] flex flex-col">
     <el-card shadow="never" class="flex-1 flex flex-col overflow-hidden">
       <template #header>
         <div class="flex items-center gap-2">
@@ -7,7 +7,7 @@
             <ChatDotRound />
           </el-icon>
           <div>
-            <h2 class="text-lg font-semibold text-gray-800">AI 助手</h2>
+            <h2 class="text-lg font-semibold text-gray-800">{{ t("ai.title") }}</h2>
 
           </div>
         </div>
@@ -18,9 +18,9 @@
         <!-- 欢迎消息 -->
         <div v-if="chat.messages.length === 0" class="text-center py-12">
          
-          <p class="text-gray-400 text-sm">你好！我是红枣管理系统的 AI 助手</p>
+          <p class="text-gray-400 text-sm">{{ t("ai.welcome") }}</p>
           <p class="text-gray-400 text-xs mt-1">
-            可以问我关于红枣种植、收购、加工、销售的问题
+            {{ t("ai.welcomeDesc") }}
           </p>
         </div>
 
@@ -55,7 +55,7 @@
       <!-- 输入区域 -->
       <div class=" pt-4 px-2">
         <div class="flex gap-2 ">
-          <el-input v-model="input" type="text" placeholder="请输入您的问题，按 Enter 发送..."
+          <el-input v-model="input" type="text" :placeholder="t('ai.placeholder')"
             resize="none" :disabled="isLoading" @keydown="handleKeydown" @compositionstart="handleCompositionStart"
             @compositionend="handleCompositionEnd"
             size="large" class="flex-1" rows="1" style="height: 48px;" />
@@ -70,7 +70,7 @@
           </el-button>
         </div>
         <p class="text-xs text-gray-400 mt-2 text-center">
-          AI 生成内容仅供参考，请以实际情况为准
+          {{ t("ai.disclaimer") }}
         </p>
       </div>
     </el-card>
@@ -83,7 +83,9 @@ import { ChatDotRound, Top } from "@element-plus/icons-vue";
 import { Chat } from "@ai-sdk/vue";
 import { DefaultChatTransport } from "ai";
 import type { UIMessage } from "ai";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const messagesContainer = ref<HTMLDivElement>();
 const input = ref("");
 const isComposing = ref(false);
@@ -147,7 +149,7 @@ const sendMessage = async () => {
     console.error("AI 消息发送失败:", error);
     input.value = text;
     ElMessage.error(
-      error instanceof Error ? error.message : "AI 对话发送失败，请稍后重试"
+      error instanceof Error ? error.message : t("ai.sendFailed")
     );
   }
 };
@@ -180,6 +182,12 @@ const handleCompositionEnd = () => {
   flex-direction: column;
   height: 100%;
   padding: 16px;
+}
+
+@media (max-width: 767px) {
+  :deep(.el-card__body) {
+    padding: 10px;
+  }
 }
 
 /* 动画 */

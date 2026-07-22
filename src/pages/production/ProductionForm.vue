@@ -4,38 +4,42 @@
     <el-card shadow="never">
       <template #header>
         <div class="flex flex-col gap-1">
-          <h2 class="text-lg font-semibold text-gray-800">生产录入</h2>
-          <p class="text-sm text-gray-400">登记当日红枣生产批次信息</p>
+          <h2 class="text-lg font-semibold text-gray-800">
+            {{ t("production.entryTitle") }}
+          </h2>
+          <p class="text-sm text-gray-400">
+            {{ t("production.entryDesc") }}
+          </p>
         </div>
       </template>
 
       <!-- 公共信息：班次、生产日期、批次号 -->
       <el-form label-width="80px">
         <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="班次">
+          <el-col :xs="24" :sm="8">
+            <el-form-item :label="t('common.shift')">
               <el-radio-group v-model="commonData.shift">
-                <el-radio value="day">白班</el-radio>
-                <el-radio value="night">夜班</el-radio>
+                <el-radio value="day">{{ t("common.dayShift") }}</el-radio>
+                <el-radio value="night">{{ t("common.nightShift") }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="生产日期">
+          <el-col :xs="24" :sm="8">
+            <el-form-item :label="t('production.productionDate')">
               <el-date-picker
                 v-model="commonData.date"
                 type="date"
-                placeholder="选择生产日期"
+                :placeholder="t('production.selectDate')"
                 value-format="YYYY.MM.DD"
                 style="width: 100%"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="批次号">
+          <el-col :xs="24" :sm="8">
+            <el-form-item :label="t('common.batchNo')">
               <el-input
                 v-model="commonData.batchNo"
-                placeholder="请输入批次号"
+                :placeholder="t('production.enterBatchNo')"
               />
             </el-form-item>
           </el-col>
@@ -43,47 +47,47 @@
       </el-form>
 
       <!-- 成品录入 -->
-      <div class="mb-2 text-gray-600 font-medium">成品录入</div>
+      <div class="mb-2 text-gray-600 font-medium">{{ t("production.normalEntry") }}</div>
       <el-form :model="normalForm" label-width="80px" ref="normalFormRef">
         <el-row :gutter="20">
-          <el-col :span="6">
-            <el-form-item label="等级">
+          <el-col :xs="24" :sm="12" :md="6">
+            <el-form-item :label="t('common.grade')">
               <el-select
-                placeholder="请选择等级"
+                :placeholder="t('production.selectGrade')"
                 v-model="normalForm.grade"
                 style="width: 100%"
               >
-                <el-option label="枣王" value="KingGrade" />
-                <el-option label="超特" value="SuperPremium" />
-                <el-option label="特级" value="PremiumGrade" />
-                <el-option label="一级" value="Grade1" />
-                <el-option label="二级" value="Grade2" />
-                <el-option label="三级" value="Grade3" />
+                <el-option :label="t('grade.KingGrade')" value="KingGrade" />
+                <el-option :label="t('grade.SuperPremium')" value="SuperPremium" />
+                <el-option :label="t('grade.PremiumGrade')" value="PremiumGrade" />
+                <el-option :label="t('grade.Grade1')" value="Grade1" />
+                <el-option :label="t('grade.Grade2')" value="Grade2" />
+                <el-option :label="t('grade.Grade3')" value="Grade3" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="规格">
-              <el-input v-model="normalForm.spec" placeholder="请输入规格">
+          <el-col :xs="24" :sm="12" :md="6">
+            <el-form-item :label="t('common.spec')">
+              <el-input v-model="normalForm.spec" :placeholder="t('production.enterSpec')">
                 <template #append>kg</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="数量">
+          <el-col :xs="24" :sm="12" :md="6">
+            <el-form-item :label="t('common.quantity')">
               <el-input
                 v-model.number="normalForm.quantity"
-                placeholder="请输入数量"
+                :placeholder="t('production.enterQuantity')"
               >
                 <template #append>件</template>
               </el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="重量">
+          <el-col :xs="24" :sm="12" :md="6">
+            <el-form-item :label="t('common.weight')">
               <el-input
                 :value="normalWeight || ''"
-                placeholder="自动计算"
+                :placeholder="t('production.autoCalc')"
                 disabled
               >
                 <template #append>kg</template>
@@ -92,14 +96,14 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="18">
-            <el-form-item label="备注">
-              <el-input v-model="normalForm.remark" placeholder="请输入备注" />
+          <el-col :xs="24" :sm="18">
+            <el-form-item :label="t('common.remark')">
+              <el-input v-model="normalForm.remark" :placeholder="t('common.remark')" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :xs="24" :sm="6">
             <el-button type="primary" @click="addNormalItem"
-              >添加成品</el-button
+              >{{ t("production.addProduct") }}</el-button
             >
           </el-col>
         </el-row>
@@ -108,7 +112,7 @@
       <!-- 等外品录入（可折叠） -->
       <el-collapse v-model="substandardCollapse" class="mt-4">
         <el-collapse-item
-          title="等外品录入（变形、裂口、干条、烂枣）"
+          :title="t('production.substandardEntry')"
           name="substandard"
         >
           <el-form
@@ -117,80 +121,80 @@
             ref="substandardFormRef"
           >
             <el-row :gutter="20">
-              <el-col :span="6">
-                <el-form-item label="类型">
-                  <el-select
-                    v-model="substandardForm.substandardType"
-                    placeholder="请选择类型"
-                    @change="handleSubstandardTypeChange"
-                    style="width: 100%"
-                  >
-                    <el-option label="变形" value="变形" />
-                    <el-option label="裂口" value="裂口" />
-                    <el-option label="干条" value="干条" />
-                    <el-option label="烂枣" value="烂枣" />
-                  </el-select>
-                </el-form-item>
+              <el-col :xs="24" :sm="12" :md="6">
+              <el-form-item :label="t('common.type')">
+                <el-select
+                  v-model="substandardForm.substandardType"
+                  :placeholder="t('substandardType.allTypes')"
+                  @change="handleSubstandardTypeChange"
+                  style="width: 100%"
+                >
+                  <el-option :label="t('substandardType.变形')" value="变形" />
+                  <el-option :label="t('substandardType.裂口')" value="裂口" />
+                  <el-option :label="t('substandardType.干条')" value="干条" />
+                  <el-option :label="t('substandardType.烂枣')" value="烂枣" />
+                </el-select>
+              </el-form-item>
               </el-col>
-              <el-col :span="6">
-                <el-form-item label="来源等级">
-                  <el-select
-                    v-model="substandardForm.sourceGrade"
-                    placeholder="请选择来源等级"
-                    style="width: 100%"
-                  >
-                    <el-option label="枣王" value="枣王" />
-                    <el-option label="超特" value="超特" />
-                    <el-option label="特级" value="特级" />
-                    <el-option label="一级" value="一级" />
-                    <el-option label="二级" value="二级" />
-                    <el-option label="三级" value="三级" />
-                  </el-select>
-                </el-form-item>
+              <el-col :xs="24" :sm="12" :md="6">
+              <el-form-item :label="t('substandardType.sourceGrade')">
+                <el-select
+                  v-model="substandardForm.sourceGrade"
+                  :placeholder="t('grade.allGrades')"
+                  style="width: 100%"
+                >
+                  <el-option :label="t('grade.KingGrade')" value="枣王" />
+                  <el-option :label="t('grade.SuperPremium')" value="超特" />
+                  <el-option :label="t('grade.PremiumGrade')" value="特级" />
+                  <el-option :label="t('grade.Grade1')" value="一级" />
+                  <el-option :label="t('grade.Grade2')" value="二级" />
+                  <el-option :label="t('grade.Grade3')" value="三级" />
+                </el-select>
+              </el-form-item>
               </el-col>
-              <el-col :span="6">
-                <el-form-item label="规格">
-                  <el-input :value="substandardForm.spec" disabled>
-                    <template #append>kg</template>
-                  </el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-form-item label="数量">
-                  <el-input
-                    v-model.number="substandardForm.quantity"
-                    placeholder="请输入数量"
-                  >
+              <el-col :xs="24" :sm="12" :md="6">
+              <el-form-item :label="t('common.spec')">
+                <el-input :value="substandardForm.spec" disabled>
+                  <template #append>kg</template>
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="6">
+              <el-form-item :label="t('common.quantity')">
+                <el-input
+                  v-model.number="substandardForm.quantity"
+                  :placeholder="t('production.enterQuantity')"
+                >
                     <template #append>件</template>
                   </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row :gutter="20">
-              <el-col :span="6">
-                <el-form-item label="重量">
-                  <el-input
-                    :value="substandardWeight || ''"
-                    placeholder="自动计算"
-                    disabled
-                  >
+              <el-col :xs="24" :sm="6">
+              <el-form-item :label="t('common.weight')">
+                <el-input
+                  :value="substandardWeight || ''"
+                  :placeholder="t('production.autoCalc')"
+                  disabled
+                >
                     <template #append>kg</template>
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <el-form-item label="备注">
-                  <el-input
-                    v-model="substandardForm.remark"
-                    placeholder="请输入备注"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="6">
-                <el-button type="warning" @click="addSubstandardItem"
-                  >添加等外品</el-button
-                >
-              </el-col>
+              <el-col :xs="24" :sm="12">
+              <el-form-item :label="t('common.remark')">
+                <el-input
+                  v-model="substandardForm.remark"
+                  :placeholder="t('common.remark')"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :xs="24" :sm="6">
+              <el-button type="warning" @click="addSubstandardItem"
+                >{{ t("production.addSubstandard") }}</el-button
+              >
+            </el-col>
             </el-row>
           </el-form>
         </el-collapse-item>
@@ -201,30 +205,30 @@
         v-if="pendingNormalList.length > 0 || pendingSubstandardList.length > 0"
         class="mt-4"
       >
-        <div class="text-sm font-medium text-gray-600 mb-2">待提交列表</div>
+        <div class="text-sm font-medium text-gray-600 mb-2">{{ t("production.pendingList") }}</div>
         <el-table :data="pendingNormalList" size="small" class="mb-2">
-          <el-table-column label="类型" width="80">
-            <template #default><el-tag type="success">成品</el-tag></template>
+          <el-table-column :label="t('common.type')" width="80">
+            <template #default><el-tag type="success">{{ t("production.normalTag") }}</el-tag></template>
           </el-table-column>
-          <el-table-column prop="grade" label="等级" width="80">
+          <el-table-column prop="grade" :label="t('common.grade')" width="80">
             <template #default="{ row }">{{
               gradeMap[row.grade] || row.grade
             }}</template>
           </el-table-column>
-          <el-table-column prop="spec" label="规格(kg)" width="80" />
-          <el-table-column prop="quantity" label="数量(件)" width="80" />
-          <el-table-column prop="weight" label="重量(kg)" width="100">
+          <el-table-column prop="spec" :label="t('common.spec')" width="80" />
+          <el-table-column prop="quantity" :label="t('common.quantity')" width="80" />
+          <el-table-column prop="weight" :label="t('common.weight')" width="100">
             <template #default="{ row }">{{ formatWeight(row.weight) }}</template>
           </el-table-column>
-          <el-table-column prop="remark" label="备注" />
-          <el-table-column label="操作" width="60" align="center">
+          <el-table-column prop="remark" :label="t('common.remark')" />
+          <el-table-column :label="t('common.action')" width="60" align="center">
             <template #default="{ $index }">
               <el-button
                 type="danger"
                 size="small"
                 link
                 @click="removeNormalItem($index)"
-                >删除</el-button
+                >{{ t("common.delete") }}</el-button
               >
             </template>
           </el-table-column>
@@ -234,27 +238,27 @@
           :data="pendingSubstandardList"
           size="small"
         >
-          <el-table-column label="类型" width="80">
-            <template #default><el-tag type="warning">等外品</el-tag></template>
+          <el-table-column :label="t('common.type')" width="80">
+            <template #default><el-tag type="warning">{{ t("production.substandardTag") }}</el-tag></template>
           </el-table-column>
-          <el-table-column prop="substandardType" label="名称" width="80" />
-          <el-table-column prop="sourceGrade" label="来源等级" width="80" />
-          <el-table-column prop="spec" label="规格(kg)" width="80" />
-          <el-table-column prop="quantity" label="数量(件)" width="80" />
-          <el-table-column prop="weight" label="重量(kg)" width="100">
+          <el-table-column prop="substandardType" :label="t('common.type')" width="80" />
+          <el-table-column prop="sourceGrade" :label="t('substandardType.sourceGrade')" width="80" />
+          <el-table-column prop="spec" :label="t('common.spec')" width="80" />
+          <el-table-column prop="quantity" :label="t('common.quantity')" width="80" />
+          <el-table-column prop="weight" :label="t('common.weight')" width="100">
             <template #default="{ row }">{{
               formatWeight(row.weight)
             }}</template>
           </el-table-column>
-          <el-table-column prop="remark" label="备注" />
-          <el-table-column label="操作" width="60" align="center">
+          <el-table-column prop="remark" :label="t('common.remark')" />
+          <el-table-column :label="t('common.action')" width="60" align="center">
             <template #default="{ $index }">
               <el-button
                 type="danger"
                 size="small"
                 link
                 @click="removeSubstandardItem($index)"
-                >删除</el-button
+                >{{ t("common.delete") }}</el-button
               >
             </template>
           </el-table-column>
@@ -262,8 +266,8 @@
       </div>
 
       <!-- 提交按钮 -->
-      <div class="flex justify-end mt-4 gap-2">
-        <el-button @click="handleClearAll">清空</el-button>
+      <div class="flex flex-wrap justify-end mt-4 gap-2">
+        <el-button @click="handleClearAll">{{ t("common.clear") }}</el-button>
         <el-button
           type="primary"
           @click="handleBatchSubmit"
@@ -273,9 +277,7 @@
             pendingSubstandardList.length === 0
           "
         >
-          批量提交 ({{
-            pendingNormalList.length + pendingSubstandardList.length
-          }})
+          {{ t("production.batchSubmit", [pendingNormalList.length + pendingSubstandardList.length]) }}
         </el-button>
       </div>
     </el-card>
@@ -284,7 +286,7 @@
     <el-card shadow="never">
       <template #header>
         <div class="flex justify-between items-center">
-          <h2 class="font-semibold">当日生产批次</h2>
+          <h2 class="font-semibold">{{ t("production.todayBatches") }}</h2>
         </div>
       </template>
       <el-table
@@ -301,7 +303,7 @@
           <template #default="{ row }">
             <div class="p-4 bg-gray-50">
               <div class="mb-2 text-sm font-medium text-gray-600">
-                成品
+                {{ t("production.normalProducts") }}
               </div>
               <el-table
                 :data="row.normalProducts"
@@ -309,62 +311,62 @@
                 border
                 class="mb-3"
               >
-                <el-table-column prop="grade" label="等级" width="80">
+                <el-table-column prop="grade" :label="t('common.grade')" width="80">
                   <template #default="{ row: r }">{{
                     gradeMap[r.grade] || r.grade
                   }}</template>
                 </el-table-column>
-                <el-table-column prop="spec" label="规格(kg)" width="80" />
-                <el-table-column prop="quantity" label="数量(件)" width="80" />
-                <el-table-column prop="weight" label="重量(kg)" width="100">
+                <el-table-column prop="spec" :label="t('common.spec')" width="80" />
+                <el-table-column prop="quantity" :label="t('common.quantity')" width="80" />
+                <el-table-column prop="weight" :label="t('common.weight')" width="100">
                   <template #default="{ row: r }">{{
                     r.weight?.toFixed(2)
                   }}</template>
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" />
+                <el-table-column prop="remark" :label="t('common.remark')" />
               </el-table>
               <div
                 v-if="
                   row.substandardProducts && row.substandardProducts.length > 0
                 "
               >
-                <div class="mb-2 text-sm font-medium text-gray-600">等外品</div>
+                <div class="mb-2 text-sm font-medium text-gray-600">{{ t("production.substandardProducts") }}</div>
                 <el-table :data="row.substandardProducts" size="small" border>
                   <el-table-column
                     prop="substandardType"
-                    label="类型"
+                    :label="t('common.type')"
                     width="80"
                   />
                   <el-table-column
                     prop="sourceGrade"
-                    label="来源等级"
+                    :label="t('substandardType.sourceGrade')"
                     width="80"
                   />
-                  <el-table-column prop="spec" label="规格(kg)" width="80" />
+                  <el-table-column prop="spec" :label="t('common.spec')" width="80" />
                   <el-table-column
                     prop="quantity"
-                    label="数量(件)"
+                    :label="t('common.quantity')"
                     width="80"
                   />
-                  <el-table-column prop="weight" label="重量(kg)" width="100">
+                  <el-table-column prop="weight" :label="t('common.weight')" width="100">
                     <template #default="{ row: r }">{{
                       r.weight?.toFixed(2)
                     }}</template>
                   </el-table-column>
-                  <el-table-column prop="remark" label="备注" />
+                  <el-table-column prop="remark" :label="t('common.remark')" />
                 </el-table>
               </div>
               <div
                 v-else-if="row.normalProducts && row.normalProducts.length > 0"
                 class="text-gray-400 text-sm"
               >
-                暂无等外品记录
+                {{ t("production.noSubstandard") }}
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="日期" width="110" />
-        <el-table-column prop="shift" label="班次" width="80">
+        <el-table-column prop="date" :label="t('common.date')" width="110" />
+        <el-table-column prop="shift" :label="t('common.shift')" width="80">
           <template #default="{ row }">
             <el-tag
               :type="row.shift === 'day' ? 'warning' : 'info'"
@@ -374,30 +376,30 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="batchNo" label="批次号" min-width="140" />
-        <el-table-column label="等级内产品" width="100" align="center">
+        <el-table-column prop="batchNo" :label="t('common.batchNo')" min-width="140" />
+        <el-table-column :label="t('production.normalCount')" width="100" align="center">
           <template #default="{ row }">
             <el-tag type="success" size="small"
-              >{{ row.normalCount || 0 }} 条</el-tag
+              >{{ row.normalCount || 0 }}</el-tag
             >
           </template>
         </el-table-column>
-        <el-table-column label="等外品" width="100" align="center">
+        <el-table-column :label="t('production.substandardCount')" width="100" align="center">
           <template #default="{ row }">
             <el-tag v-if="row.substandardCount > 0" type="warning" size="small"
-              >{{ row.substandardCount }} 条</el-tag
+              >{{ row.substandardCount }}</el-tag
             >
             <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
-        <el-table-column label="总件数" width="100" align="center">
+        <el-table-column :label="t('production.totalQuantity')" width="100" align="center">
           <template #default="{ row }">
             <el-tag type="info" size="small"
               >{{ row.totalQuantity || 0 }} 件</el-tag
             >
           </template>
         </el-table-column>
-        <el-table-column label="总重量(吨)" width="120" align="right">
+        <el-table-column :label="t('production.totalWeight')" width="120" align="right">
           <template #default="{ row }">{{
             ((row.totalWeight || 0) / 1000).toFixed(3)
           }}</template>
@@ -413,6 +415,7 @@ import type { FormInstance } from "element-plus";
 import { ElMessage } from "element-plus";
 import request from "@/utils/request";
 import { formatWeight } from "@/utils/format";
+import { useI18n } from "vue-i18n";
 type GradeType =
   | "KingGrade"
   | "SuperPremium"
@@ -475,6 +478,8 @@ interface BatchRecord {
   substandardProducts: SubstandardRecord[];
 }
 
+const { t } = useI18n();
+
 // 等外品类型对应的固定规格(kg/件)
 const SUBSTANDARD_SPECS: Record<string, number> = {
   变形: 12,
@@ -534,8 +539,8 @@ const substandardWeight = computed(
 );
 
 const shiftMap: Record<string, string> = {
-  day: "白班",
-  night: "夜班",
+  day: t("common.dayShift"),
+  night: t("common.nightShift"),
 };
 
 const gradeMap: Record<string, string> = {
@@ -555,7 +560,7 @@ const handleSubstandardTypeChange = (type: string) => {
 // 添加正品到待提交列表
 const addNormalItem = () => {
   if (!normalForm.spec || normalForm.quantity <= 0) {
-    ElMessage.warning("请填写规格和数量");
+    ElMessage.warning(t("production.fillSpecQty"));
     return;
   }
   pendingNormalList.value.push({
@@ -574,7 +579,7 @@ const addNormalItem = () => {
 // 添加等外品到待提交列表
 const addSubstandardItem = () => {
   if (substandardForm.quantity <= 0) {
-    ElMessage.warning("请填写数量");
+    ElMessage.warning(t("production.fillQty"));
     return;
   }
   pendingSubstandardList.value.push({
@@ -609,18 +614,18 @@ const handleClearAll = () => {
 // 批量提交
 const handleBatchSubmit = async () => {
   if (!commonData.date) {
-    ElMessage.warning("请选择生产日期");
+    ElMessage.warning(t("production.selectDateWarn"));
     return;
   }
   if (!commonData.batchNo) {
-    ElMessage.warning("请输入批次号");
+    ElMessage.warning(t("production.enterBatchNoWarn"));
     return;
   }
 
   const total =
     pendingNormalList.value.length + pendingSubstandardList.value.length;
   if (total === 0) {
-    ElMessage.warning("请先添加产品");
+    ElMessage.warning(t("production.addProductFirst"));
     return;
   }
 
@@ -643,7 +648,7 @@ const handleBatchSubmit = async () => {
       });
       successCount++;
     } catch (error: any) {
-      errorMsg += `成品-${gradeMap[item.grade]}: ${error.message || "失败"}; `;
+      errorMsg += `成品-${gradeMap[item.grade]}: ${error.message || t("common.failed")}; `;
     }
   }
 
@@ -663,14 +668,14 @@ const handleBatchSubmit = async () => {
       });
       successCount++;
     } catch (error: any) {
-      errorMsg += `等外品-${item.substandardType}: ${error.message || "失败"}; `;
+      errorMsg += `等外品-${item.substandardType}: ${error.message || t("common.failed")}; `;
     }
   }
 
   submitLoading.value = false;
 
   if (successCount > 0) {
-    ElMessage.success(`成功提交 ${successCount} 条记录`);
+    ElMessage.success(t("production.submitSuccess", [successCount]));
     pendingNormalList.value = [];
     pendingSubstandardList.value = [];
     substandardCollapse.value = [];
@@ -797,7 +802,7 @@ const fetchTodayRecords = async () => {
     });
   } catch (error: any) {
     console.error("获取生产记录失败:", error);
-    ElMessage.error("获取生产记录失败");
+    ElMessage.error(t("production.fetchFailed"));
   } finally {
     loading.value = false;
   }

@@ -3,41 +3,41 @@
     <!-- 筛选区域 -->
     <el-card shadow="never" class="mb-4">
       <el-form :inline="true" :model="substandardFilter">
-        <el-form-item label="等外品类型">
+        <el-form-item :label="t('common.type')">
           <el-select
             v-model="substandardFilter.type"
-            placeholder="全部类型"
+            :placeholder="t('substandardType.allTypes')"
             clearable
             style="width: 150px"
           >
-            <el-option label="全部" value="" />
-            <el-option label="变形" value="变形" />
-            <el-option label="裂口" value="裂口" />
-            <el-option label="干条" value="干条" />
-            <el-option label="烂枣" value="烂枣" />
+            <el-option :label="t('common.all')" value="" />
+            <el-option :label="t('substandardType.变形')" value="变形" />
+            <el-option :label="t('substandardType.裂口')" value="裂口" />
+            <el-option :label="t('substandardType.干条')" value="干条" />
+            <el-option :label="t('substandardType.烂枣')" value="烂枣" />
           </el-select>
         </el-form-item>
-        <el-form-item label="来源等级">
+        <el-form-item :label="t('substandardType.sourceGrade')">
           <el-select
             v-model="substandardFilter.sourceGrade"
-            placeholder="全部等级"
+            :placeholder="t('grade.allGrades')"
             clearable
             style="width: 150px"
           >
-            <el-option label="全部" value="" />
-            <el-option label="枣王" value="枣王" />
-            <el-option label="超特" value="超特" />
-            <el-option label="特级" value="特级" />
-            <el-option label="一级" value="一级" />
-            <el-option label="二级" value="二级" />
-            <el-option label="三级" value="三级" />
+            <el-option :label="t('common.all')" value="" />
+            <el-option :label="t('grade.KingGrade')" value="枣王" />
+            <el-option :label="t('grade.SuperPremium')" value="超特" />
+            <el-option :label="t('grade.PremiumGrade')" value="特级" />
+            <el-option :label="t('grade.Grade1')" value="一级" />
+            <el-option :label="t('grade.Grade2')" value="二级" />
+            <el-option :label="t('grade.Grade3')" value="三级" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="applySubstandardFilter"
-            >筛选</el-button
+            >{{ t("common.filter") }}</el-button
           >
-          <el-button @click="resetSubstandardFilter">重置</el-button>
+          <el-button @click="resetSubstandardFilter">{{ t("common.reset") }}</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -46,7 +46,7 @@
     <el-row :gutter="20" class="mb-6">
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-gray-50">
-          <div class="text-gray-500 text-sm">总记录数</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.totalRecords") }}</div>
           <div class="text-2xl font-bold text-gray-600">
             {{ substandardStats.records }}
           </div>
@@ -54,7 +54,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-amber-50">
-          <div class="text-gray-500 text-sm">总件数</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.totalPieces") }}</div>
           <div class="text-2xl font-bold text-amber-600">
             {{ substandardStats.quantity }}
           </div>
@@ -62,7 +62,7 @@
       </el-col>
       <el-col :xs="12" :sm="6">
         <el-card shadow="hover" class="stat-card bg-indigo-50">
-          <div class="text-gray-500 text-sm">总重量(吨)</div>
+          <div class="text-gray-500 text-sm">{{ t("inventory.totalWeight") }}</div>
           <div class="text-2xl font-bold text-indigo-600">
             {{ formatTon(substandardStats.weight) }}
           </div>
@@ -73,18 +73,18 @@
     <!-- 等外品类型分布表格 -->
     <el-card shadow="never" class="mb-4">
       <template #header>
-        <span class="font-medium">等外品类型分布</span>
+        <span class="font-medium">{{ t("inventory.substandardDistribution") }}</span>
       </template>
       <el-table :data="substandardTypeData" stripe>
-        <el-table-column prop="type" label="类型" width="120">
+        <el-table-column prop="type" :label="t('common.type')" width="120">
           <template #default="{ row }">
             <el-tag type="warning">{{ row.type }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="records" label="记录数" width="100" />
-        <el-table-column prop="quantity" label="件数" width="100" />
-        <el-table-column prop="spec" label="规格(kg/件)" width="140" />
-        <el-table-column prop="weight" label="重量(吨)" width="120">
+        <el-table-column prop="records" :label="t('common.records')" width="100" />
+        <el-table-column prop="quantity" :label="t('common.quantity')" width="100" />
+        <el-table-column prop="spec" :label="t('common.spec')" width="140" />
+        <el-table-column prop="weight" :label="t('common.weight')" width="120">
           <template #default="{ row }">{{ formatTon(row.weight) }}</template>
         </el-table-column>
       </el-table>
@@ -95,7 +95,7 @@
       <el-col :xs="24" :lg="12">
         <el-card shadow="never">
           <template #header
-            ><span class="font-medium">等外品类型分布</span></template
+            ><span class="font-medium">{{ t("inventory.substandardDistribution") }}</span></template
           >
           <v-chart
             :option="substandardPieOption"
@@ -107,7 +107,7 @@
       <el-col :xs="24" :lg="12">
         <el-card shadow="never">
           <template #header
-            ><span class="font-medium">等外品来源等级分布</span></template
+            ><span class="font-medium">{{ t("inventory.substandardSourceDist") }}</span></template
           >
           <v-chart
             :option="substandardSourcePieOption"
@@ -142,6 +142,7 @@ import {
 import VChart from "vue-echarts";
 import request from "@/utils/request";
 import { formatTon } from "@/utils/format";
+import { useI18n } from "vue-i18n";
 
 // 注册 ECharts 所需模块
 use([
@@ -151,6 +152,8 @@ use([
   TooltipComponent,
   LegendComponent,
 ]);
+
+const { t } = useI18n();
 
 /** 筛选条件 */
 const substandardFilter = ref({ type: "", sourceGrade: "" });
@@ -240,7 +243,7 @@ const substandardSourcePieOption = computed(() => {
   // 按来源等级汇总重量
   const sourceMap: Record<string, number> = {};
   substandardAllData.value.forEach((r: any) => {
-    const grade = r.sourceGrade || "未知";
+    const grade = r.sourceGrade || t("common.noData");
     sourceMap[grade] = (sourceMap[grade] || 0) + (r.weight || 0);
   });
   return {
@@ -366,7 +369,7 @@ const processSubstandardData = () => {
   > = {};
 
   data.forEach((r: any) => {
-    const type = r.substandardType || "未知";
+    const type = r.substandardType || t("common.noData");
     if (!typeMap[type])
       typeMap[type] = {
         records: 0,

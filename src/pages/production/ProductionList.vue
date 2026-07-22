@@ -2,44 +2,44 @@
   <div class="p-2">
     <el-card shadow="never">
       <template #header>
-        <div class="flex justify-between items-center">
+        <div class="flex flex-wrap justify-between items-center gap-2">
           <div class="flex flex-col gap-1">
-            <h2 class="text-lg font-semibold text-gray-800">生产记录列表</h2>
-            <p class="text-sm text-gray-400">查看所有红枣加工生产记录</p>
+            <h2 class="text-lg font-semibold text-gray-800">{{ t("productionList.title") }}</h2>
+            <p class="text-sm text-gray-400">{{ t("productionList.desc") }}</p>
           </div>
           <el-button type="primary" @click="goToCreate">
             <el-icon><Plus /></el-icon>
-            新增生产
+            {{ t("productionList.add") }}
           </el-button>
         </div>
       </template>
 
       <!-- 搜索筛选 -->
       <el-form :inline="true" class="mb-4">
-        <el-form-item label="日期范围">
+        <el-form-item :label="t('productionList.dateRange')">
           <el-date-picker
             v-model="searchForm.dateRange"
             type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            range-separator="-"
+            :start-placeholder="t('productionList.startDate')"
+            :end-placeholder="t('productionList.endDate')"
             value-format="YYYY.MM.DD"
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="班次">
-          <el-select v-model="searchForm.shift" placeholder="全部班次" clearable style="width: 120px">
-            <el-option label="全部" value="" />
-            <el-option label="白班" value="day" />
-            <el-option label="夜班" value="night" />
+        <el-form-item :label="t('common.shift')">
+          <el-select v-model="searchForm.shift" :placeholder="t('productionList.allShifts')" clearable style="width: 120px">
+            <el-option :label="t('common.all')" value="" />
+            <el-option :label="t('common.dayShift')" value="day" />
+            <el-option :label="t('common.nightShift')" value="night" />
           </el-select>
         </el-form-item>
-        <el-form-item label="批次号">
-          <el-input v-model="searchForm.batchNo" placeholder="请输入批次号" clearable style="width: 180px" />
+        <el-form-item :label="t('common.batchNo')">
+          <el-input v-model="searchForm.batchNo" :placeholder="t('productionList.enterBatchNo')" clearable style="width: 180px" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">搜索</el-button>
-          <el-button @click="resetSearch">重置</el-button>
+          <el-button type="primary" @click="handleSearch">{{ t("common.search") }}</el-button>
+          <el-button @click="resetSearch">{{ t("common.reset") }}</el-button>
         </el-form-item>
       </el-form>
 
@@ -55,77 +55,77 @@
         <el-table-column type="expand">
           <template #default="{ row }">
             <div class="p-4 bg-gray-50">
-              <div class="mb-2 text-sm font-medium text-gray-600">等级内产品</div>
+              <div class="mb-2 text-sm font-medium text-gray-600">{{ t("productionList.normalProducts") }}</div>
               <el-table :data="row.normalProducts" size="small" border class="mb-3">
-                <el-table-column prop="grade" label="等级" width="80">
+                <el-table-column prop="grade" :label="t('common.grade')" width="80">
                   <template #default="{ row: r }">{{ gradeMap[r.grade] || r.grade }}</template>
                 </el-table-column>
-                <el-table-column prop="spec" label="规格(kg)" width="80" />
-                <el-table-column prop="quantity" label="数量(件)" width="80" />
-                <el-table-column prop="weight" label="重量(吨)" width="100">
+                <el-table-column prop="spec" :label="t('common.spec')" width="80" />
+                <el-table-column prop="quantity" :label="t('common.quantity')" width="80" />
+                <el-table-column prop="weight" :label="t('common.weight')" width="100">
                   <template #default="{ row: r }">{{ ((r.weight || 0) / 1000).toFixed(3) }}</template>
                 </el-table-column>
-                <el-table-column prop="remark" label="备注" />
-                <el-table-column label="操作" width="80" align="center">
+                <el-table-column prop="remark" :label="t('common.remark')" />
+                <el-table-column :label="t('common.action')" width="80" align="center">
                   <template #default="{ row: r }">
-                    <el-button type="danger" size="small" link @click="handleDeleteNormal(r)">删除</el-button>
+                    <el-button type="danger" size="small" link @click="handleDeleteNormal(r)">{{ t("common.delete") }}</el-button>
                   </template>
                 </el-table-column>
               </el-table>
               <div v-if="row.substandardProducts && row.substandardProducts.length > 0">
-                <div class="mb-2 text-sm font-medium text-gray-600">等外品</div>
+                <div class="mb-2 text-sm font-medium text-gray-600">{{ t("productionList.substandardProducts") }}</div>
                 <el-table :data="row.substandardProducts" size="small" border>
-                  <el-table-column prop="substandardType" label="类型" width="80" />
-                  <el-table-column prop="sourceGrade" label="来源等级" width="80" />
-                  <el-table-column prop="spec" label="规格(kg)" width="80" />
-                  <el-table-column prop="quantity" label="数量(件)" width="80" />
-                  <el-table-column prop="weight" label="重量(吨)" width="100">
+                  <el-table-column prop="substandardType" :label="t('common.type')" width="80" />
+                  <el-table-column prop="sourceGrade" :label="t('substandardType.sourceGrade')" width="80" />
+                  <el-table-column prop="spec" :label="t('common.spec')" width="80" />
+                  <el-table-column prop="quantity" :label="t('common.quantity')" width="80" />
+                  <el-table-column prop="weight" :label="t('common.weight')" width="100">
                     <template #default="{ row: r }">{{ ((r.weight || 0) / 1000).toFixed(3) }}</template>
                   </el-table-column>
-                  <el-table-column prop="remark" label="备注" />
-                  <el-table-column label="操作" width="80" align="center">
+                  <el-table-column prop="remark" :label="t('common.remark')" />
+                  <el-table-column :label="t('common.action')" width="80" align="center">
                     <template #default="{ row: r }">
-                      <el-button type="danger" size="small" link @click="handleDeleteSubstandard(r)">删除</el-button>
+                      <el-button type="danger" size="small" link @click="handleDeleteSubstandard(r)">{{ t("common.delete") }}</el-button>
                     </template>
                   </el-table-column>
                 </el-table>
               </div>
-              <div v-else class="text-gray-400 text-sm">暂无等外品记录</div>
+              <div v-else class="text-gray-400 text-sm">{{ t("productionList.noSubstandard") }}</div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="日期" width="110" />
-        <el-table-column prop="shift" label="班次" width="80">
+        <el-table-column prop="date" :label="t('common.date')" width="110" />
+        <el-table-column prop="shift" :label="t('common.shift')" width="80">
           <template #default="{ row }">
             <el-tag :type="row.shift === 'day' ? 'warning' : 'info'" size="small">
               {{ shiftMap[row.shift] || row.shift }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="batchNo" label="批次号" min-width="140" />
-        <el-table-column label="等级内产品" width="100" align="center">
+        <el-table-column prop="batchNo" :label="t('common.batchNo')" min-width="140" />
+        <el-table-column :label="t('productionList.normalProducts')" width="100" align="center">
           <template #default="{ row }">
-            <el-tag type="success" size="small">{{ row.normalCount || 0 }} 条</el-tag>
+            <el-tag type="success" size="small">{{ row.normalCount || 0 }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="等外品" width="100" align="center">
+        <el-table-column :label="t('productionList.substandardProducts')" width="100" align="center">
           <template #default="{ row }">
-            <el-tag v-if="row.substandardCount > 0" type="warning" size="small">{{ row.substandardCount }} 条</el-tag>
+            <el-tag v-if="row.substandardCount > 0" type="warning" size="small">{{ row.substandardCount }}</el-tag>
             <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
-        <el-table-column label="总件数" width="100" align="center">
+        <el-table-column :label="t('production.totalQuantity')" width="100" align="center">
           <template #default="{ row }">
-            <el-tag type="info" size="small">{{ row.totalQuantity || 0 }} 件</el-tag>
+            <el-tag type="info" size="small">{{ row.totalQuantity || 0 }} {{ t("common.piecesUnit") }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="总重量(吨)" width="120" align="right">
+        <el-table-column :label="t('production.totalWeight')" width="120" align="right">
           <template #default="{ row }">{{ ((row.totalWeight || 0) / 1000).toFixed(3) }}</template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
-      <div class="flex justify-end mt-4">
+      <div class="flex flex-wrap justify-end mt-4">
         <el-pagination
           v-model:current-page="pagination.page"
           v-model:page-size="pagination.pageSize"
@@ -142,6 +142,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -187,6 +188,7 @@ interface BatchRecord {
 }
 
 const router = useRouter();
+const { t } = useI18n();
 const loading = ref(false);
 const batchList = ref<BatchRecord[]>([]);
 const expandedRowKeys = ref<string[]>([]);
@@ -209,8 +211,8 @@ const pagination = reactive({
 
 // 班次映射
 const shiftMap: Record<string, string> = {
-  day: "白班",
-  night: "夜班",
+  day: t("common.dayShift"),
+  night: t("common.nightShift"),
 };
 
 // 产品等级映射
@@ -352,7 +354,7 @@ const fetchRecords = async () => {
     batchList.value = sortedBatches.slice(start, start + pagination.pageSize);
   } catch (error: any) {
     console.error("获取生产记录失败:", error);
-    ElMessage.error("获取生产记录失败");
+    ElMessage.error(t("productionList.fetchFailed"));
   } finally {
     loading.value = false;
   }
@@ -362,16 +364,16 @@ const fetchRecords = async () => {
 const handleDeleteNormal = async (record: ProductionRecord) => {
   try {
     await ElMessageBox.confirm(
-      `确定要删除该等级内产品记录吗？`,
-      "提示",
-      { confirmButtonText: "确定", cancelButtonText: "取消", type: "warning" }
+      t("productionList.deleteNormalConfirm"),
+      t("header.prompt"),
+      { confirmButtonText: t("common.confirm"), cancelButtonText: t("common.cancel"), type: "warning" }
     );
     await request.delete(`/production/${record.id}`);
-    ElMessage.success("删除成功");
+    ElMessage.success(t("productionList.deleteSuccess"));
     fetchRecords();
   } catch (error: any) {
     if (error !== "cancel") {
-      ElMessage.error(error.message || "删除失败");
+      ElMessage.error(error.message || t("productionList.deleteFailed"));
     }
   }
 };
@@ -380,16 +382,16 @@ const handleDeleteNormal = async (record: ProductionRecord) => {
 const handleDeleteSubstandard = async (record: SubstandardRecord) => {
   try {
     await ElMessageBox.confirm(
-      `确定要删除该等外品记录吗？`,
-      "提示",
-      { confirmButtonText: "确定", cancelButtonText: "取消", type: "warning" }
+      t("productionList.deleteSubstandardConfirm"),
+      t("header.prompt"),
+      { confirmButtonText: t("common.confirm"), cancelButtonText: t("common.cancel"), type: "warning" }
     );
     await request.delete(`/substandards/${record.id}`);
-    ElMessage.success("删除成功");
+    ElMessage.success(t("productionList.deleteSuccess"));
     fetchRecords();
   } catch (error: any) {
     if (error !== "cancel") {
-      ElMessage.error(error.message || "删除失败");
+      ElMessage.error(error.message || t("productionList.deleteFailed"));
     }
   }
 };

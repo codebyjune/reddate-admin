@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <el-card class="w-96">
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <el-card class="w-full max-w-sm">
       <template #header>
         <div class="text-center">
-          <h1 class="text-xl font-semibold text-gray-800">红枣管理系统</h1>
-          <p class="text-sm text-gray-500 mt-1">用户登录</p>
+          <h1 class="text-xl font-semibold text-gray-800">{{ t("app.name") }}</h1>
+          <p class="text-sm text-gray-500 mt-1">{{ t("auth.login") }}</p>
         </div>
       </template>
 
@@ -12,7 +12,7 @@
         <el-form-item prop="username">
           <el-input
             v-model="formData.username"
-            placeholder="用户名"
+            :placeholder="t('auth.username')"
             prefix-icon="User"
             size="large"
           />
@@ -21,7 +21,7 @@
           <el-input
             v-model="formData.password"
             type="password"
-            placeholder="密码"
+            :placeholder="t('auth.password')"
             prefix-icon="Lock"
             size="large"
             show-password
@@ -36,15 +36,15 @@
             :loading="loading"
             @click="handleLogin"
           >
-            登录
+            {{ t("auth.login") }}
           </el-button>
         </el-form-item>
       </el-form>
 
       <div class="text-center text-sm text-gray-500">
-        还没有账号？
+        {{ t("auth.noAccount") }}
         <router-link to="/register" class="text-blue-500 hover:underline">
-          立即注册
+          {{ t("auth.registerNow") }}
         </router-link>
       </div>
     </el-card>
@@ -56,7 +56,9 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { FormInstance, FormRules } from "element-plus";
 import { useAuthStore } from "@/stores/auth";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
 const formRef = ref<FormInstance>();
@@ -68,8 +70,8 @@ const formData = reactive({
 });
 
 const rules = reactive<FormRules>({
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  username: [{ required: true, message: t("auth.enterUsername"), trigger: "blur" }],
+  password: [{ required: true, message: t("auth.enterPassword"), trigger: "blur" }],
 });
 
 const handleLogin = async () => {
@@ -79,10 +81,10 @@ const handleLogin = async () => {
     loading.value = true;
     try {
       await authStore.login(formData.username, formData.password);
-      ElMessage.success("登录成功");
+      ElMessage.success(t("auth.loginSuccess"));
       router.push("/");
     } catch (error: any) {
-      ElMessage.error(error.message || "登录失败");
+      ElMessage.error(error.message || t("auth.loginFailed"));
     } finally {
       loading.value = false;
     }
